@@ -1,0 +1,945 @@
+{
+  "meta": {
+    "academicYear": "2025/26",
+    "residentsYear": 1,
+    "generated": "2026-07-17",
+    "note": "Из графика ротации с исправлениями: Шидаева нед.13-16 ОО4->ОО2; неделя 24 = 06.04-10.04. Manual-блоки без куратора назначаются в админке."
+  },
+  "weeks": [
+    {
+      "num": 1,
+      "start": "2025-09-01",
+      "end": "2025-09-05"
+    },
+    {
+      "num": 2,
+      "start": "2025-09-08",
+      "end": "2025-09-12"
+    },
+    {
+      "num": 3,
+      "start": "2025-09-15",
+      "end": "2025-09-19"
+    },
+    {
+      "num": 4,
+      "start": "2025-09-22",
+      "end": "2025-09-26"
+    },
+    {
+      "num": 5,
+      "start": "2025-09-29",
+      "end": "2025-10-03"
+    },
+    {
+      "num": 6,
+      "start": "2025-10-06",
+      "end": "2025-10-10"
+    },
+    {
+      "num": 7,
+      "start": "2025-10-13",
+      "end": "2025-10-17"
+    },
+    {
+      "num": 8,
+      "start": "2025-10-20",
+      "end": "2025-10-24"
+    },
+    {
+      "num": 9,
+      "start": "2025-10-27",
+      "end": "2025-10-31"
+    },
+    {
+      "num": 10,
+      "start": "2025-11-03",
+      "end": "2025-11-07"
+    },
+    {
+      "num": 11,
+      "start": "2025-11-17",
+      "end": "2025-11-21"
+    },
+    {
+      "num": 12,
+      "start": "2025-11-24",
+      "end": "2025-11-28"
+    },
+    {
+      "num": 13,
+      "start": "2025-12-01",
+      "end": "2025-12-05"
+    },
+    {
+      "num": 14,
+      "start": "2025-12-08",
+      "end": "2025-12-12"
+    },
+    {
+      "num": 15,
+      "start": "2025-12-15",
+      "end": "2025-12-19"
+    },
+    {
+      "num": 16,
+      "start": "2025-12-22",
+      "end": "2025-12-30"
+    },
+    {
+      "num": 17,
+      "start": "2026-02-11",
+      "end": "2026-02-20"
+    },
+    {
+      "num": 18,
+      "start": "2026-02-24",
+      "end": "2026-02-27"
+    },
+    {
+      "num": 19,
+      "start": "2026-03-02",
+      "end": "2026-03-06"
+    },
+    {
+      "num": 20,
+      "start": "2026-03-10",
+      "end": "2026-03-13"
+    },
+    {
+      "num": 21,
+      "start": "2026-03-16",
+      "end": "2026-03-20"
+    },
+    {
+      "num": 22,
+      "start": "2026-03-23",
+      "end": "2026-03-27"
+    },
+    {
+      "num": 23,
+      "start": "2026-03-30",
+      "end": "2026-04-03"
+    },
+    {
+      "num": 24,
+      "start": "2026-04-06",
+      "end": "2026-04-10"
+    },
+    {
+      "num": 25,
+      "start": "2026-04-20",
+      "end": "2026-04-24"
+    },
+    {
+      "num": 26,
+      "start": "2026-04-27",
+      "end": "2026-04-30"
+    },
+    {
+      "num": 27,
+      "start": "2026-05-04",
+      "end": "2026-05-08"
+    },
+    {
+      "num": 28,
+      "start": "2026-05-12",
+      "end": "2026-05-15"
+    },
+    {
+      "num": 29,
+      "start": "2026-05-18",
+      "end": "2026-05-22"
+    },
+    {
+      "num": 30,
+      "start": "2026-05-25",
+      "end": "2026-05-29"
+    },
+    {
+      "num": 31,
+      "start": "2026-06-01",
+      "end": "2026-06-05"
+    },
+    {
+      "num": 32,
+      "start": "2026-06-08",
+      "end": "2026-06-11"
+    },
+    {
+      "num": 33,
+      "start": "2026-06-15",
+      "end": "2026-06-19"
+    },
+    {
+      "num": 34,
+      "start": "2026-06-22",
+      "end": "2026-06-26"
+    },
+    {
+      "num": 35,
+      "start": "2026-06-29",
+      "end": "2026-07-04"
+    }
+  ],
+  "curators": [
+    {
+      "id": "ronzin",
+      "fio": "Ронзин Андрей Владимирович",
+      "note": "ОО №1 (С8)",
+      "telegramChatId": null
+    },
+    {
+      "id": "dalgatov",
+      "fio": "Далгатов Камиль Далгатович",
+      "note": "ОО №2 (С8)",
+      "telegramChatId": null
+    },
+    {
+      "id": "hasan",
+      "fio": "Хасан Амер",
+      "note": "ОО №3 (С8)",
+      "telegramChatId": null
+    },
+    {
+      "id": "kobzev",
+      "fio": "Кобзев Дмитрий Сергеевич",
+      "note": "ОО №4 (С8)",
+      "telegramChatId": null
+    },
+    {
+      "id": "levitskiy",
+      "fio": "Левицкий Александр Васильевич",
+      "note": "ОО №5 (С8)",
+      "telegramChatId": null
+    },
+    {
+      "id": "umyarov",
+      "fio": "Умяров Тимур Романович",
+      "note": "онкоурологическое отделение, А22/К57",
+      "telegramChatId": null
+    },
+    {
+      "id": "karpovich",
+      "fio": "Карпович Марина Петровна",
+      "note": "отд. заболеваний молочной железы и репродуктивной системы, А22/К57",
+      "telegramChatId": null
+    },
+    {
+      "id": "panshin",
+      "fio": "Паньшин Александр Геннадьевич",
+      "note": "А22, Онкологическое отделение №3",
+      "telegramChatId": null
+    },
+    {
+      "id": "khalzova",
+      "fio": "Хальзова Мария Сергеевна",
+      "note": "А22, Онкологическое отделение №1",
+      "telegramChatId": null
+    },
+    {
+      "id": "shestakov",
+      "fio": "Шестаков Алексей Владимирович",
+      "note": "С8, заведующий ЦАОП / ОО №1",
+      "telegramChatId": null
+    },
+    {
+      "id": "sekhina",
+      "fio": "Сехина Ольга Викторовна",
+      "note": "ДС противоопухолевой лекарственной терапии №1 (С8)",
+      "telegramChatId": null
+    },
+    {
+      "id": "romanchuk",
+      "fio": "Романчук Ольга Викторовна",
+      "note": "ЦАОП химиотерапевтич. отд. (А22)",
+      "telegramChatId": null
+    },
+    {
+      "id": "andrianova",
+      "fio": "Андрианова Виолетта Сергеевна",
+      "note": "ДС противоопухолевой лекарственной терапии (А22)",
+      "telegramChatId": null
+    },
+    {
+      "id": "petukhov",
+      "fio": "Петухов Евгений Алексеевич",
+      "note": "радиотерапевтическое отделение",
+      "telegramChatId": null
+    },
+    {
+      "id": "fedorinov",
+      "fio": "Федоринов Денис Сергеевич",
+      "note": "ООПЛТ",
+      "telegramChatId": null
+    },
+    {
+      "id": "lummer",
+      "fio": "Луммер Кирилл Борисович",
+      "note": "кабинет интервенционной ультрасонографии",
+      "telegramChatId": null
+    },
+    {
+      "id": "donchenko",
+      "fio": "Донченко Наталья Сергеевна",
+      "note": "отделение лучевой диагностики",
+      "telegramChatId": null
+    },
+    {
+      "id": "kovaleva",
+      "fio": "Ковалева Алина Сергеевна",
+      "note": "отделение лучевой диагностики",
+      "telegramChatId": null
+    }
+  ],
+  "units": [
+    {
+      "id": "oo1",
+      "short": "ОО1",
+      "name": "Онкологическое отделение №1",
+      "territory": "С8",
+      "curatorRule": "auto",
+      "color": "#3b6ea5",
+      "candidateCuratorIds": [
+        "ronzin"
+      ]
+    },
+    {
+      "id": "oo2",
+      "short": "ОО2",
+      "name": "Онкологическое отделение №2",
+      "territory": "С8",
+      "curatorRule": "auto",
+      "color": "#4f9d55",
+      "candidateCuratorIds": [
+        "dalgatov"
+      ]
+    },
+    {
+      "id": "oo3",
+      "short": "ОО3",
+      "name": "Онкологическое отделение №3",
+      "territory": "С8",
+      "curatorRule": "auto",
+      "color": "#c26a2e",
+      "candidateCuratorIds": [
+        "hasan"
+      ]
+    },
+    {
+      "id": "oo4",
+      "short": "ОО4",
+      "name": "Онкологическое отделение №4",
+      "territory": "С8",
+      "curatorRule": "auto",
+      "color": "#8a63b8",
+      "candidateCuratorIds": [
+        "kobzev"
+      ]
+    },
+    {
+      "id": "oo5",
+      "short": "ОО5",
+      "name": "Онкологическое отделение №5",
+      "territory": "С8",
+      "curatorRule": "auto",
+      "color": "#2ca6a4",
+      "candidateCuratorIds": [
+        "levitskiy"
+      ]
+    },
+    {
+      "id": "caop_gmu",
+      "short": "ЦАОП г/м/у",
+      "name": "ЦАОП гинеколог/маммолог/уролог",
+      "territory": "А22, К57",
+      "curatorRule": "manual",
+      "color": "#c9508f",
+      "candidateCuratorIds": [
+        "umyarov",
+        "karpovich"
+      ]
+    },
+    {
+      "id": "caop_obsh",
+      "short": "ЦАОП общ",
+      "name": "ЦАОП общий онколог",
+      "territory": "А22 / С8",
+      "curatorRule": "manual",
+      "color": "#d94f4f",
+      "candidateCuratorIds": [
+        "panshin",
+        "khalzova",
+        "shestakov"
+      ]
+    },
+    {
+      "id": "ht_ds",
+      "short": "ХТ ДС",
+      "name": "Химиотерапия дневной стационар (С8)",
+      "territory": "С8",
+      "curatorRule": "auto",
+      "color": "#b8952e",
+      "candidateCuratorIds": [
+        "sekhina"
+      ]
+    },
+    {
+      "id": "ht_ds_a22",
+      "short": "ХТ ДС А22",
+      "name": "Химиотерапия / дневной стационар (А22)",
+      "territory": "А22",
+      "curatorRule": "manual",
+      "color": "#a58a3a",
+      "candidateCuratorIds": [
+        "romanchuk",
+        "andrianova"
+      ]
+    },
+    {
+      "id": "lt",
+      "short": "ЛТ",
+      "name": "Лучевая терапия",
+      "territory": "",
+      "curatorRule": "auto",
+      "color": "#5f7d8c",
+      "candidateCuratorIds": [
+        "petukhov"
+      ]
+    },
+    {
+      "id": "ld",
+      "short": "ЛД",
+      "name": "Лучевая диагностика",
+      "territory": "",
+      "curatorRule": "manual",
+      "color": "#7d9a3c",
+      "candidateCuratorIds": [
+        "donchenko",
+        "kovaleva"
+      ]
+    },
+    {
+      "id": "ooplt",
+      "short": "ООПЛТ",
+      "name": "ООПЛТ (круглосуточная химиотерапия)",
+      "territory": "",
+      "curatorRule": "auto",
+      "color": "#6b7280",
+      "candidateCuratorIds": [
+        "fedorinov"
+      ]
+    },
+    {
+      "id": "iuzi",
+      "short": "иУЗИ",
+      "name": "Интервенционная ультрасонография",
+      "territory": "",
+      "curatorRule": "auto",
+      "color": "#3c8f7c",
+      "candidateCuratorIds": [
+        "lummer"
+      ]
+    }
+  ],
+  "residents": [
+    {
+      "id": "buh",
+      "fio": "Бухурова Элона Руслановна"
+    },
+    {
+      "id": "kaz",
+      "fio": "Казоря Дарья Михайловна"
+    },
+    {
+      "id": "mir",
+      "fio": "Мирзаханов Рамиль Ирекович"
+    },
+    {
+      "id": "orl",
+      "fio": "Орлов Артем Игоревич"
+    },
+    {
+      "id": "suh",
+      "fio": "Сухоносова Софья Алексеевна"
+    },
+    {
+      "id": "shid",
+      "fio": "Шидаева Милена Михайловна"
+    },
+    {
+      "id": "shis",
+      "fio": "Шишкин Андрей Романович"
+    },
+    {
+      "id": "yar",
+      "fio": "Ярахмедова Людмила Маратовна"
+    }
+  ],
+  "rotationBlocks": [
+    {
+      "id": "b01",
+      "residentId": "buh",
+      "unitId": "caop_gmu",
+      "weekFrom": 1,
+      "weekTo": 6,
+      "assignedCuratorId": null
+    },
+    {
+      "id": "b02",
+      "residentId": "buh",
+      "unitId": "oo1",
+      "weekFrom": 7,
+      "weekTo": 10,
+      "assignedCuratorId": "ronzin"
+    },
+    {
+      "id": "b03",
+      "residentId": "buh",
+      "unitId": "oo5",
+      "weekFrom": 11,
+      "weekTo": 14,
+      "assignedCuratorId": "levitskiy"
+    },
+    {
+      "id": "b04",
+      "residentId": "buh",
+      "unitId": "ld",
+      "weekFrom": 15,
+      "weekTo": 16,
+      "assignedCuratorId": null
+    },
+    {
+      "id": "b05",
+      "residentId": "buh",
+      "unitId": "oo2",
+      "weekFrom": 17,
+      "weekTo": 20,
+      "assignedCuratorId": "dalgatov"
+    },
+    {
+      "id": "b06",
+      "residentId": "buh",
+      "unitId": "ht_ds",
+      "weekFrom": 21,
+      "weekTo": 26,
+      "assignedCuratorId": "sekhina"
+    },
+    {
+      "id": "b07",
+      "residentId": "buh",
+      "unitId": "oo3",
+      "weekFrom": 27,
+      "weekTo": 30,
+      "assignedCuratorId": "hasan"
+    },
+    {
+      "id": "b08",
+      "residentId": "buh",
+      "unitId": "oo4",
+      "weekFrom": 31,
+      "weekTo": 34,
+      "assignedCuratorId": "kobzev"
+    },
+    {
+      "id": "b09",
+      "residentId": "kaz",
+      "unitId": "ooplt",
+      "weekFrom": 1,
+      "weekTo": 6,
+      "assignedCuratorId": "fedorinov"
+    },
+    {
+      "id": "b10",
+      "residentId": "kaz",
+      "unitId": "caop_obsh",
+      "weekFrom": 7,
+      "weekTo": 12,
+      "assignedCuratorId": null
+    },
+    {
+      "id": "b11",
+      "residentId": "kaz",
+      "unitId": "oo2",
+      "weekFrom": 13,
+      "weekTo": 16,
+      "assignedCuratorId": "dalgatov"
+    },
+    {
+      "id": "b12",
+      "residentId": "kaz",
+      "unitId": "oo5",
+      "weekFrom": 17,
+      "weekTo": 20,
+      "assignedCuratorId": "levitskiy"
+    },
+    {
+      "id": "b13",
+      "residentId": "kaz",
+      "unitId": "oo1",
+      "weekFrom": 21,
+      "weekTo": 24,
+      "assignedCuratorId": "ronzin"
+    },
+    {
+      "id": "b14",
+      "residentId": "kaz",
+      "unitId": "ht_ds",
+      "weekFrom": 25,
+      "weekTo": 30,
+      "assignedCuratorId": "sekhina"
+    },
+    {
+      "id": "b15",
+      "residentId": "kaz",
+      "unitId": "oo3",
+      "weekFrom": 31,
+      "weekTo": 34,
+      "assignedCuratorId": "hasan"
+    },
+    {
+      "id": "b16",
+      "residentId": "mir",
+      "unitId": "oo4",
+      "weekFrom": 1,
+      "weekTo": 4,
+      "assignedCuratorId": "kobzev"
+    },
+    {
+      "id": "b17",
+      "residentId": "mir",
+      "unitId": "lt",
+      "weekFrom": 5,
+      "weekTo": 10,
+      "assignedCuratorId": "petukhov"
+    },
+    {
+      "id": "b18",
+      "residentId": "mir",
+      "unitId": "ht_ds",
+      "weekFrom": 11,
+      "weekTo": 16,
+      "assignedCuratorId": "sekhina"
+    },
+    {
+      "id": "b19",
+      "residentId": "mir",
+      "unitId": "caop_obsh",
+      "weekFrom": 17,
+      "weekTo": 22,
+      "assignedCuratorId": null
+    },
+    {
+      "id": "b20",
+      "residentId": "mir",
+      "unitId": "oo1",
+      "weekFrom": 23,
+      "weekTo": 26,
+      "assignedCuratorId": "ronzin"
+    },
+    {
+      "id": "b21",
+      "residentId": "mir",
+      "unitId": "oo2",
+      "weekFrom": 27,
+      "weekTo": 30,
+      "assignedCuratorId": "dalgatov"
+    },
+    {
+      "id": "b22",
+      "residentId": "mir",
+      "unitId": "ooplt",
+      "weekFrom": 31,
+      "weekTo": 35,
+      "assignedCuratorId": "fedorinov"
+    },
+    {
+      "id": "b23",
+      "residentId": "orl",
+      "unitId": "oo3",
+      "weekFrom": 1,
+      "weekTo": 4,
+      "assignedCuratorId": "hasan"
+    },
+    {
+      "id": "b24",
+      "residentId": "orl",
+      "unitId": "ht_ds",
+      "weekFrom": 5,
+      "weekTo": 10,
+      "assignedCuratorId": "sekhina"
+    },
+    {
+      "id": "b25",
+      "residentId": "orl",
+      "unitId": "lt",
+      "weekFrom": 11,
+      "weekTo": 16,
+      "assignedCuratorId": "petukhov"
+    },
+    {
+      "id": "b26",
+      "residentId": "orl",
+      "unitId": "ooplt",
+      "weekFrom": 17,
+      "weekTo": 22,
+      "assignedCuratorId": "fedorinov"
+    },
+    {
+      "id": "b27",
+      "residentId": "orl",
+      "unitId": "oo2",
+      "weekFrom": 23,
+      "weekTo": 26,
+      "assignedCuratorId": "dalgatov"
+    },
+    {
+      "id": "b28",
+      "residentId": "orl",
+      "unitId": "oo4",
+      "weekFrom": 27,
+      "weekTo": 30,
+      "assignedCuratorId": "kobzev"
+    },
+    {
+      "id": "b29",
+      "residentId": "orl",
+      "unitId": "caop_obsh",
+      "weekFrom": 31,
+      "weekTo": 35,
+      "assignedCuratorId": null
+    },
+    {
+      "id": "b30",
+      "residentId": "suh",
+      "unitId": "oo1",
+      "weekFrom": 1,
+      "weekTo": 4,
+      "assignedCuratorId": "ronzin"
+    },
+    {
+      "id": "b31",
+      "residentId": "suh",
+      "unitId": "caop_gmu",
+      "weekFrom": 5,
+      "weekTo": 10,
+      "assignedCuratorId": null
+    },
+    {
+      "id": "b32",
+      "residentId": "suh",
+      "unitId": "ooplt",
+      "weekFrom": 11,
+      "weekTo": 16,
+      "assignedCuratorId": "fedorinov"
+    },
+    {
+      "id": "b33",
+      "residentId": "suh",
+      "unitId": "oo5",
+      "weekFrom": 17,
+      "weekTo": 20,
+      "assignedCuratorId": "levitskiy"
+    },
+    {
+      "id": "b34",
+      "residentId": "suh",
+      "unitId": "oo3",
+      "weekFrom": 21,
+      "weekTo": 24,
+      "assignedCuratorId": "hasan"
+    },
+    {
+      "id": "b35",
+      "residentId": "suh",
+      "unitId": "caop_obsh",
+      "weekFrom": 25,
+      "weekTo": 30,
+      "assignedCuratorId": null
+    },
+    {
+      "id": "b36",
+      "residentId": "suh",
+      "unitId": "oo2",
+      "weekFrom": 31,
+      "weekTo": 34,
+      "assignedCuratorId": "dalgatov"
+    },
+    {
+      "id": "b37",
+      "residentId": "shid",
+      "unitId": "caop_obsh",
+      "weekFrom": 1,
+      "weekTo": 6,
+      "assignedCuratorId": null
+    },
+    {
+      "id": "b38",
+      "residentId": "shid",
+      "unitId": "ooplt",
+      "weekFrom": 7,
+      "weekTo": 12,
+      "assignedCuratorId": "fedorinov"
+    },
+    {
+      "id": "b39",
+      "residentId": "shid",
+      "unitId": "oo2",
+      "weekFrom": 13,
+      "weekTo": 16,
+      "assignedCuratorId": "dalgatov"
+    },
+    {
+      "id": "b40",
+      "residentId": "shid",
+      "unitId": "oo1",
+      "weekFrom": 17,
+      "weekTo": 20,
+      "assignedCuratorId": "ronzin"
+    },
+    {
+      "id": "b41",
+      "residentId": "shid",
+      "unitId": "oo4",
+      "weekFrom": 21,
+      "weekTo": 24,
+      "assignedCuratorId": "kobzev"
+    },
+    {
+      "id": "b42",
+      "residentId": "shid",
+      "unitId": "lt",
+      "weekFrom": 25,
+      "weekTo": 30,
+      "assignedCuratorId": "petukhov"
+    },
+    {
+      "id": "b43",
+      "residentId": "shid",
+      "unitId": "oo5",
+      "weekFrom": 31,
+      "weekTo": 34,
+      "assignedCuratorId": "levitskiy"
+    },
+    {
+      "id": "b44",
+      "residentId": "shis",
+      "unitId": "oo5",
+      "weekFrom": 1,
+      "weekTo": 4,
+      "assignedCuratorId": "levitskiy"
+    },
+    {
+      "id": "b45",
+      "residentId": "shis",
+      "unitId": "oo4",
+      "weekFrom": 5,
+      "weekTo": 8,
+      "assignedCuratorId": "kobzev"
+    },
+    {
+      "id": "b46",
+      "residentId": "shis",
+      "unitId": "caop_gmu",
+      "weekFrom": 9,
+      "weekTo": 14,
+      "assignedCuratorId": null
+    },
+    {
+      "id": "b47",
+      "residentId": "shis",
+      "unitId": "iuzi",
+      "weekFrom": 15,
+      "weekTo": 16,
+      "assignedCuratorId": "lummer"
+    },
+    {
+      "id": "b48",
+      "residentId": "shis",
+      "unitId": "lt",
+      "weekFrom": 17,
+      "weekTo": 22,
+      "assignedCuratorId": "petukhov"
+    },
+    {
+      "id": "b49",
+      "residentId": "shis",
+      "unitId": "oo3",
+      "weekFrom": 23,
+      "weekTo": 26,
+      "assignedCuratorId": "hasan"
+    },
+    {
+      "id": "b50",
+      "residentId": "shis",
+      "unitId": "oo1",
+      "weekFrom": 27,
+      "weekTo": 30,
+      "assignedCuratorId": "ronzin"
+    },
+    {
+      "id": "b51",
+      "residentId": "shis",
+      "unitId": "ht_ds",
+      "weekFrom": 31,
+      "weekTo": 35,
+      "assignedCuratorId": "sekhina"
+    },
+    {
+      "id": "b52",
+      "residentId": "yar",
+      "unitId": "oo2",
+      "weekFrom": 1,
+      "weekTo": 4,
+      "assignedCuratorId": "dalgatov"
+    },
+    {
+      "id": "b53",
+      "residentId": "yar",
+      "unitId": "oo3",
+      "weekFrom": 5,
+      "weekTo": 8,
+      "assignedCuratorId": "hasan"
+    },
+    {
+      "id": "b54",
+      "residentId": "yar",
+      "unitId": "oo4",
+      "weekFrom": 9,
+      "weekTo": 12,
+      "assignedCuratorId": "kobzev"
+    },
+    {
+      "id": "b55",
+      "residentId": "yar",
+      "unitId": "oo1",
+      "weekFrom": 13,
+      "weekTo": 16,
+      "assignedCuratorId": "ronzin"
+    },
+    {
+      "id": "b56",
+      "residentId": "yar",
+      "unitId": "caop_gmu",
+      "weekFrom": 17,
+      "weekTo": 22,
+      "assignedCuratorId": null
+    },
+    {
+      "id": "b57",
+      "residentId": "yar",
+      "unitId": "ooplt",
+      "weekFrom": 23,
+      "weekTo": 28,
+      "assignedCuratorId": "fedorinov"
+    },
+    {
+      "id": "b58",
+      "residentId": "yar",
+      "unitId": "lt",
+      "weekFrom": 29,
+      "weekTo": 34,
+      "assignedCuratorId": "petukhov"
+    }
+  ]
+}
