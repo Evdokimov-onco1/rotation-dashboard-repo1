@@ -57,3 +57,27 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ── Тема «Пост отделения» ─────────────────────────────── */
+:root {
+  --background: 150 8% 94%;
+  --foreground: 197 33% 16%;
+  --card: 0 0% 100%;
+  --card-foreground: 197 33% 16%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 197 33% 16%;
+  --primary: 191 72% 21%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 160 12% 90%;
+  --secondary-foreground: 197 33% 16%;
+  --muted: 160 10% 91%;
+  --muted-foreground: 199 14% 38%;
+  --accent: 160 12% 90%;
+  --accent-foreground: 197 33% 16%;
+  --border: 158 12% 84%;
+  --input: 158 12% 78%;
+  --ring: 191 72% 28%;
+  --radius: 0.25rem;
+}
+.mono { font-family: Consolas, "SF Mono", "Roboto Mono", Menlo, monospace; }
+.caps-label { text-transform: uppercase; letter-spacing: 0.09em; }
