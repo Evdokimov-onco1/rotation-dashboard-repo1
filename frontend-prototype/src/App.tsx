@@ -29,6 +29,42 @@ function currentWeekNum(date: string): number | null {
   return w ? w.num : null;
 }
 
+function addWorkdays(iso: string, n: number): string {
+  const d = new Date(iso + "T00:00:00");
+  let added = 0;
+  while (added < n) {
+    d.setDate(d.getDate() + 1);
+    const day = d.getDay();
+    if (day !== 0 && day !== 6) added++;
+  }
+  return d.toISOString().slice(0, 10);
+}
+
+function PinGate({ title, desc, onUnlock }: { title: string; desc: string; onUnlock: () => void }) {
+  const [pin, setPin] = useState("");
+  const [err, setErr] = useState(false);
+  const tryPin = () => (pin === "1234" ? onUnlock() : setErr(true));
+  return (
+    <Card className="max-w-sm rounded-md">
+      <CardHeader><CardTitle className="text-base">{title}</CardTitle></CardHeader>
+      <CardContent className="space-y-3">
+        <p className="text-sm text-neutral-600">
+          {desc}
+          <br /><span className="text-neutral-400">(в прототипе: 1234)</span>
+        </p>
+        <div className="flex gap-2">
+          <Input type="password" inputMode="numeric" placeholder="PIN" value={pin}
+            onChange={(e) => { setPin(e.target.value); setErr(false); }}
+            onKeyDown={(e) => e.key === "Enter" && tryPin()}
+            className="w-32" />
+          <Button onClick={tryPin}>Войти</Button>
+        </div>
+        {err && <p className="text-sm text-red-600">Неверный PIN.</p>}
+      </CardContent>
+    </Card>
+  );
+}
+
 /* ─────────────────────────── Карточка блока (строка списка) ─────────────────────────── */
 
 function BlockRow({ bl, showResident = true, accent }: { bl: Block; showResident?: boolean; accent?: string }) {
@@ -222,28 +258,14 @@ function AdminView({ blocks, setBlocks, unlocked, setUnlocked, openEditor }:
     unlocked: boolean; setUnlocked: (v: boolean) => void;
     openEditor: (b: Block | null) => void;
   }) {
-  const [pin, setPin] = useState("");
-  const [err, setErr] = useState(false);
 
   if (!unlocked) {
     return (
-      <Card className="max-w-sm rounded-md">
-        <CardHeader><CardTitle className="text-base">Режим администратора</CardTitle></CardHeader>
-        <CardContent className="space-y-3">
-          <p className="text-sm text-neutral-600">
-            Просмотр открыт всем. Для редактирования графика введите PIN-код.
-            <br /><span className="text-neutral-400">(в прототипе: 1234)</span>
-          </p>
-          <div className="flex gap-2">
-            <Input type="password" inputMode="numeric" placeholder="PIN" value={pin}
-              onChange={(e) => { setPin(e.target.value); setErr(false); }}
-              onKeyDown={(e) => e.key === "Enter" && (pin === "1234" ? setUnlocked(true) : setErr(true))}
-              className="w-32" />
-            <Button onClick={() => (pin === "1234" ? setUnlocked(true) : setErr(true))}>Войти</Button>
-          </div>
-          {err && <p className="text-sm text-red-600">Неверный PIN.</p>}
-        </CardContent>
-      </Card>
+      <PinGate
+        title="Режим администратора"
+        desc="Просмотр открыт всем. Для редактирования графика введите PIN-код."
+        onUnlock={() => setUnlocked(true)}
+      />
     );
   }
 
@@ -303,6 +325,138 @@ function AdminView({ blocks, setBlocks, unlocked, setUnlocked, openEditor }:
       <p className="text-xs text-neutral-500">
         Прототип: изменения хранятся только в этой вкладке браузера. В боевой версии каждая правка
         сохраняется на сервере и попадает в журнал изменений.
+      </p>
+    </div>
+  );
+}
+
+/* ───────────────────────────── Кабинет учебной части ───────────────────────────── */
+
+const SIGN_WINDOW_WORKDAYS = 5;
+
+function EduView({ blocks, date, unlocked, setUnlocked }:
+  { blocks: Block[]; date: string; unlocked: boolean; setUnlocked: (v: boolean) => void }) {
+  if (!unlocked) {
+    return (
+      <PinGate
+        title="Кабинет учебной части"
+        desc="Сводка задач кураторов на сегодня. Доступ по PIN-коду (тот же, что у админки)."
+        onUnlock={() => setUnlocked(true)}
+      />
+    );
+  }
+
+  const curW = currentWeekNum(date);
+  interface Tasks { sign: Block[]; start: Block[]; nowCount: number; }
+  const byCurator = new Map<string, Tasks>();
+  const ensure = (cid: string) => {
+    if (!byCurator.has(cid)) byCurator.set(cid, { sign: [], start: [], nowCount: 0 });
+    return byCurator.get(cid)!;
+  };
+  const unassigned: Block[] = [];
+
+  for (const b of blocks) {
+    if (!b.curatorId) { unassigned.push(b); continue; }
+    const st = blockStatus(b, date);
+    if (st === "past") {
+      const deadline = addWorkdays(weekByNum(b.to).end, SIGN_WINDOW_WORKDAYS);
+      if (date <= deadline) ensure(b.curatorId).sign.push(b);
+    } else if (st === "current") {
+      const t = ensure(b.curatorId);
+      t.nowCount++;
+      if (curW !== null && curW === b.from) t.start.push(b);
+    }
+  }
+  unassigned.sort((a, z) => a.from - z.from);
+
+  const rows = [...byCurator.entries()]
+    .filter(([, t]) => t.sign.length > 0 || t.start.length > 0)
+    .sort((a, z) => z[1].sign.length - a[1].sign.length);
+  const totalSign = rows.reduce((s, [, t]) => s + t.sign.length, 0);
+  const totalStart = rows.reduce((s, [, t]) => s + t.start.length, 0);
+
+  const stat = (n: number, label: string, warn = false) => (
+    <div className={"rounded-md border px-4 py-2 " + (warn && n > 0 ? "border-amber-400 bg-amber-50" : "border-neutral-200 bg-white")}>
+      <div className="text-2xl font-semibold leading-none">{n}</div>
+      <div className="mt-1 text-xs text-neutral-600">{label}</div>
+    </div>
+  );
+
+  return (
+    <div className="max-w-3xl space-y-4">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex flex-wrap gap-3">
+          {stat(totalSign, "логбуков ожидают подписи")}
+          {stat(totalStart, "ротаций стартует на этой неделе")}
+          {stat(unassigned.length, "блоков без куратора", true)}
+        </div>
+        <Button variant="ghost" onClick={() => setUnlocked(false)}>Выйти</Button>
+      </div>
+
+      {rows.length === 0 && (
+        <p className="text-sm text-neutral-500">На сегодня задач у кураторов нет.</p>
+      )}
+
+      {rows.map(([cid, t]) => {
+        const c = curatorById(cid)!;
+        return (
+          <Card key={cid} className="rounded-md">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">
+                {c.fio} <span className="font-normal text-sm text-neutral-500">— {c.note}</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-1.5">
+              {t.sign.map((b) => (
+                <div key={b.id} className="text-sm">
+                  <Badge className="mr-2 bg-amber-600 align-middle">подписать логбук</Badge>
+                  {residentById(b.residentId).fio} — {unitById(b.unitId).short},{" "}
+                  недели {b.from}–{b.to}, ротация завершилась {fmtD(weekByNum(b.to).end)}
+                </div>
+              ))}
+              {t.start.map((b) => (
+                <div key={b.id} className="text-sm">
+                  <Badge variant="outline" className="mr-2 align-middle">принимает</Badge>
+                  {residentById(b.residentId).fio} — {unitById(b.unitId).short},{" "}
+                  недели {b.from}–{b.to} (по {fmtD(weekByNum(b.to).end)})
+                </div>
+              ))}
+              {t.nowCount > 0 && (
+                <p className="pt-1 text-xs text-neutral-500">сейчас на ротации: {t.nowCount} чел.</p>
+              )}
+            </CardContent>
+          </Card>
+        );
+      })}
+
+      {unassigned.length > 0 && (
+        <Card className="rounded-md border-amber-300 bg-amber-50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Ваша задача: назначить кураторов</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {unassigned.map((b) => {
+              const u = unitById(b.unitId);
+              return (
+                <div key={b.id} className="flex items-center gap-2 border-b border-amber-200 py-1.5 text-sm last:border-0">
+                  <span className="h-3 w-3 shrink-0 rounded-sm" style={{ background: u.color }} />
+                  <span className="min-w-0 flex-1">
+                    {residentById(b.residentId).fio} — {u.name}, {blockRangeLabel(b)}
+                  </span>
+                  <Badge variant="outline" className="shrink-0">
+                    старт {fmtD(weekByNum(b.from).start)}
+                  </Badge>
+                </div>
+              );
+            })}
+            <p className="pt-2 text-xs text-neutral-600">Назначение — во вкладке «Админка».</p>
+          </CardContent>
+        </Card>
+      )}
+
+      <p className="text-xs text-neutral-500">
+        «Подписать логбук» показывается {SIGN_WINDOW_WORKDAYS} рабочих дней после окончания ротации —
+        то же окно, что и у Telegram-напоминаний.
       </p>
     </div>
   );
@@ -475,6 +629,7 @@ export default function App() {
           <TabsList className="mb-4 rounded-md">
             <TabsTrigger value="curator">Кабинет куратора</TabsTrigger>
             <TabsTrigger value="matrix">Матрица</TabsTrigger>
+            <TabsTrigger value="edu">Учебная часть{adminUnlocked && " 🔓"}</TabsTrigger>
             <TabsTrigger value="admin">Админка{adminUnlocked && " 🔓"}</TabsTrigger>
           </TabsList>
           <TabsContent value="curator">
@@ -482,6 +637,10 @@ export default function App() {
           </TabsContent>
           <TabsContent value="matrix">
             <Matrix blocks={blocks} date={date} onCellClick={(b) => openEditor(b)} />
+          </TabsContent>
+          <TabsContent value="edu">
+            <EduView blocks={blocks} date={date}
+              unlocked={adminUnlocked} setUnlocked={setAdminUnlocked} />
           </TabsContent>
           <TabsContent value="admin">
             <AdminView blocks={blocks} setBlocks={setBlocks}
