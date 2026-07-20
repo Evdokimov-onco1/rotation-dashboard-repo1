@@ -16,11 +16,28 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Проверка секретов деплоя
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_WEBROOT: ${{ secrets.DEPLOY_WEBROOT }}
+          DEPLOY_BACKEND_DIR: ${{ secrets.DEPLOY_BACKEND_DIR }}
+        run: |
+          missing=""
+          for v in DEPLOY_HOST DEPLOY_USER DEPLOY_SSH_KEY DEPLOY_WEBROOT DEPLOY_BACKEND_DIR; do
+            [ -z "$(eval echo "\$$v")" ] && missing="$missing $v"
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::Не заполнены секреты:$missing. Настройте их по docs/DEPLOY.md (раздел 5) и перезапустите workflow."
+            exit 1
+          fi
+
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
