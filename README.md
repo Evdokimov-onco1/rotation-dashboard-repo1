@@ -18,9 +18,10 @@
 ## Статус
 
 - **Готово:** этап 1 в коде — БД + импорт сида, REST API (раздел 7 ТЗ), три экрана + кабинет
-  учебной части, PIN и журнал правок, `notify.php` в режиме сухого прогона.
-- **Не сделано:** деплой на хостинг Timeweb (GitHub Actions, поддомен, SSL, cron) и
-  пошаговый README первичной настройки; этап 2 (боевая Telegram-рассылка).
+  учебной части, PIN и журнал правок, `notify.php` в режиме сухого прогона; GitHub Actions
+  деплой (`.github/workflows/deploy.yml`).
+- **Осталось:** первичная настройка хостинга по инструкции **[docs/DEPLOY.md](docs/DEPLOY.md)**
+  (поддомен, SSL, MySQL, секреты, cron); этап 2 (боевая Telegram-рассылка).
 
 ## Локальный запуск
 
@@ -49,7 +50,7 @@ php -S 127.0.0.1:8090 -t frontend/dist backend/scripts/dev-server.php
 bash backend/scripts/smoke_test.sh
 ```
 
-## Продакшен (кратко, детали в ТЗ, разделы 7–9)
+## Продакшен (кратко; пошагово — [docs/DEPLOY.md](docs/DEPLOY.md))
 
 - Хостинг: виртуальный хостинг Timeweb, поддомен вида `rotation.mmcc-education.ru`.
 - БД: **MySQL из панели хостинга** (pdo_sqlite на тарифе недоступен); реквизиты — в
