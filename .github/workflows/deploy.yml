@@ -1,0 +1,59 @@
+# Деплой на виртуальный хостинг Timeweb при пуше в main.
+# Требуемые секреты репозитория — см. docs/DEPLOY.md, раздел 5.
+
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Сборка фронтенда
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Сборка артефакта сайта (webroot)
+        run: |
+          mkdir site
+          cp -r frontend/dist/. site/
+          cp deploy/root.htaccess site/.htaccess
+          cp -r backend/api site/api
+
+      - name: Ключ SSH
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "${{ secrets.DEPLOY_PORT || 22 }}" -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Деплой webroot (статика + api)
+        run: |
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.DEPLOY_PORT || 22 }}" \
+            site/ "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_WEBROOT }}/"
+
+      - name: Деплой backend вне webroot (cron, init_db, seed)
+        run: |
+          rsync -az --delete --exclude 'config.php' --exclude 'logs' \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.DEPLOY_PORT || 22 }}" \
+            backend data "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_BACKEND_DIR }}/"

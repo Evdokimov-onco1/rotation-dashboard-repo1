@@ -4,3 +4,8 @@ dist/
 bundle.html
 *.log
 .DS_Store
+
+# backend
+backend/config.php
+backend/logs/
+*.db

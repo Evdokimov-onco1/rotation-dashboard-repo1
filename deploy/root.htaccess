@@ -1,0 +1,13 @@
+# Корневой .htaccess поддомена (кладётся деплоем как <webroot>/.htaccess).
+# 1) весь HTTP — на HTTPS; 2) /api/* обслуживает api/index.php (свой .htaccess);
+# 3) остальные несуществующие пути — на index.html (SPA).
+
+RewriteEngine On
+
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+RewriteCond %{REQUEST_URI} !^/api/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]

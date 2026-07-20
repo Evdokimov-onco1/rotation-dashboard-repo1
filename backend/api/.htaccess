@@ -1,0 +1,5 @@
+# Все запросы /api/* обслуживает index.php; прямой доступ к lib/ закрыт.
+RewriteEngine On
+RewriteRule ^lib/ - [F,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [QSA,L]
