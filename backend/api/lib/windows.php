@@ -1,35 +1,48 @@
 <?php
-// Окна событий («2 последних рабочих дня курации», «3 дня до приёма») —
+// Окна событий («2 последних дня курации», «3 дня до приёма») —
 // ЕДИНАЯ логика для кабинета куратора, кабинета учебной части и рассылки
 // notify.php, чтобы экран и сообщения никогда не расходились (ТЗ, раздел 6).
+// Даты границ блока считаются по календарю ротации (calendar.php): последний
+// день блока — последний день ротации внутри его недель.
 
 declare(strict_types=1);
 
-/** Справочники одним набором — чтобы не дёргать БД в циклах. */
-function schedule_context(): array
+/** Справочники учебного года одним набором — чтобы не дёргать БД в циклах. */
+function schedule_context(?string $yearId = null): array
 {
-    static $ctx = null;
-    if ($ctx === null) {
-        $ctx = [
-            'weeks'     => array_column(fetch_weeks(), null, 'num'),
+    static $cache = [];
+    $yearId ??= current_year_id();
+    if ($yearId === null) {
+        api_fail(500, 'В базе нет ни одного учебного года.');
+    }
+    if (!isset($cache[$yearId])) {
+        $cache[$yearId] = [
+            'yearId'    => $yearId,
+            'weeks'     => array_column(fetch_weeks($yearId), null, 'num'),
+            'overrides' => fetch_overrides($yearId),
             'units'     => array_column(fetch_units(), null, 'id'),
             'curators'  => array_column(fetch_curators(), null, 'id'),
-            'residents' => array_column(fetch_residents(), null, 'id'),
-            'blocks'    => fetch_blocks(),
+            'residents' => array_column(fetch_residents($yearId), null, 'id'),
+            'blocks'    => fetch_blocks($yearId),
             'windows'   => fetch_settings_windows(),
+            'threshold' => capacity_threshold(),
         ];
     }
-    return $ctx;
+    return $cache[$yearId];
 }
 
+/** Первый день ротации блока (или начало первой недели, если дней ротации нет). */
 function block_start(array $ctx, array $b): string
 {
-    return $ctx['weeks'][$b['from']]['start'];
+    $raw = $ctx['weeks'][$b['from']]['start'];
+    return first_rotation_day($ctx, $raw, $ctx['weeks'][$b['to']]['end']) ?? $raw;
 }
 
+/** Последний день ротации блока (или конец последней недели). */
 function block_end(array $ctx, array $b): string
 {
-    return $ctx['weeks'][$b['to']]['end'];
+    $raw = $ctx['weeks'][$b['to']]['end'];
+    return last_rotation_day($ctx, $ctx['weeks'][$b['from']]['start'], $raw) ?? $raw;
 }
 
 function block_status(array $ctx, array $b, string $today): string
@@ -43,36 +56,17 @@ function block_status(array $ctx, array $b, string $today): string
     return 'current';
 }
 
-function is_workday(DateTimeImmutable $d): bool
-{
-    $wd = (int) $d->format('N');
-    return $wd >= 1 && $wd <= 5;
-}
-
-/** N рабочих дней назад от даты (не включая её саму). */
-function sub_workdays(string $iso, int $n): string
-{
-    $d = new DateTimeImmutable($iso);
-    while ($n > 0) {
-        $d = $d->sub(new DateInterval('P1D'));
-        if (is_workday($d)) {
-            $n--;
-        }
-    }
-    return $d->format('Y-m-d');
-}
-
 function diff_days(string $a, string $b): int
 {
     return (int) round((strtotime($b) - strtotime($a)) / 86400);
 }
 
-/** Сегодня — в последних N рабочих днях блока (по умолчанию 2: предпоследний и последний). */
+/** Сегодня — в последних N днях ротации блока (по умолчанию 2: предпоследний и последний). */
 function is_finishing(array $ctx, array $b, string $today): bool
 {
     $lastDays = $ctx['windows']['finishWorkdays'];
     return block_status($ctx, $b, $today) === 'current'
-        && $today >= sub_workdays(block_end($ctx, $b), $lastDays - 1);
+        && $today >= sub_rotation_days($ctx, block_end($ctx, $b), $lastDays - 1);
 }
 
 /** До старта блока осталось 1..N календарных дней (по умолчанию 3). */
@@ -125,9 +119,9 @@ function block_brief(array $ctx, array $b): array
 }
 
 /** Данные кабинета куратора: сейчас / придут / завершились / «возможно ваши». */
-function curator_dashboard(string $curatorId, ?string $today = null): array
+function curator_dashboard(string $curatorId, ?string $today = null, ?string $yearId = null): array
 {
-    $ctx = schedule_context();
+    $ctx = schedule_context($yearId);
     $today ??= moscow_today();
     if (!isset($ctx['curators'][$curatorId])) {
         api_fail(404, 'Куратор не найден.');
@@ -135,6 +129,10 @@ function curator_dashboard(string $curatorId, ?string $today = null): array
 
     $current = $incoming = $recent = $maybe = [];
     foreach ($ctx['blocks'] as $b) {
+        $res = $ctx['residents'][$b['residentId']] ?? null;
+        if ($res && !$res['active']) {
+            continue;
+        }
         $mine = $b['curatorId'] === $curatorId;
         $candidate = $b['curatorId'] === null
             && in_array($curatorId, $ctx['units'][$b['unitId']]['candidates'] ?? [], true);
@@ -142,7 +140,9 @@ function curator_dashboard(string $curatorId, ?string $today = null): array
             continue;
         }
         if ($candidate) {
-            $maybe[] = block_brief($ctx, $b);
+            if (block_status($ctx, $b, $today) !== 'past') {
+                $maybe[] = block_brief($ctx, $b);
+            }
             continue;
         }
         switch (block_status($ctx, $b, $today)) {
@@ -171,6 +171,7 @@ function curator_dashboard(string $curatorId, ?string $today = null): array
 
     return [
         'curator'  => $ctx['curators'][$curatorId],
+        'year'     => $ctx['yearId'],
         'today'    => $today,
         'current'  => $current,
         'incoming' => $incoming,
@@ -182,5 +183,5 @@ function curator_dashboard(string $curatorId, ?string $today = null): array
 
 function handle_curator_dashboard(string $curatorId): never
 {
-    api_json(curator_dashboard($curatorId));
+    api_json(curator_dashboard($curatorId, null, resolve_year()));
 }
