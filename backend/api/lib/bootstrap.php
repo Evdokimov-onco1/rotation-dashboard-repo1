@@ -18,6 +18,14 @@ function config_path(): ?string
         $candidates[] = dirname($_SERVER['DOCUMENT_ROOT']) . '/rotation-config.php';     // /home/c/ЛОГИН/поддомен/
         $candidates[] = dirname($_SERVER['DOCUMENT_ROOT'], 2) . '/rotation-config.php';  // /home/c/ЛОГИН/
     }
+    // По расположению самого файла: на хостинге lib/ лежит в <webroot>/api/lib
+    $candidates[] = dirname(__DIR__, 3) . '/rotation-config.php';   // над webroot'ом (домашний каталог)
+    $candidates[] = dirname(__DIR__, 2) . '/rotation-config.php';   // в самом webroot'е (закрыт .htaccess)
+    // Домашний каталог пользователя, от имени которого работает PHP
+    $home = getenv('HOME') ?: (function_exists('posix_getpwuid') ? (posix_getpwuid(posix_geteuid())['dir'] ?? '') : '');
+    if ($home !== '') {
+        $candidates[] = rtrim($home, '/') . '/rotation-config.php';
+    }
     $candidates[] = dirname(__DIR__, 2) . '/config.php'; // backend/config.php (локальная разработка)
     foreach ($candidates as $p) {
         if (is_file($p)) {
