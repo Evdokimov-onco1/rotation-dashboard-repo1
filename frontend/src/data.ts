@@ -9,7 +9,7 @@ export interface Organization { id: string; short: string; name: string; }
 export interface Curator { id: string; fio: string; note?: string | null; }
 export interface Unit {
   id: string; short: string; name: string;
-  rule: "auto" | "manual"; color: string; candidates: string[];
+  rule: "auto" | "manual"; color: string; candidates: string[]; territory?: string | null;
 }
 export interface Resident {
   id: string; fio: string; year: number; orgId: string;

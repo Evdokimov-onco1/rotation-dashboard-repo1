@@ -50,3 +50,5 @@ php -l backend/api/lib/*.php              # синтаксис PHP
 - Язык интерфейса, комментариев и коммитов — русский.
 - Схема БД совместима с MySQL и SQLite (без диалектных конструкций).
 - После правок backend прогонять `smoke_test.sh`; после правок фронтенда — `npm run build`.
+- Кабинеты (`views/CuratorView.tsx`, `views/ResidentView.tsx`) открываются без входа; постоянные
+  ссылки `#c=<curatorId>` и `#r=<residentId>` выбирают вкладку и человека (`App.tsx`).

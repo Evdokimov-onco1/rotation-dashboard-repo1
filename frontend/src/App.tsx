@@ -12,6 +12,7 @@ import { errText, fetchSchedule, authLogout } from "./api";
 import { currentWeekNum } from "./lib/calendar";
 import { RED, MUTE, RULE, canEditOrg, fmtLong, weekdayName } from "./views/common";
 import { CuratorView } from "./views/CuratorView";
+import { ResidentView } from "./views/ResidentView";
 import { Matrix, type MatrixFilter } from "./views/Matrix";
 import { EduView } from "./views/EduView";
 import { CalendarView } from "./views/CalendarView";
@@ -32,6 +33,11 @@ export default function App() {
   const [tick, setTick] = useState(0); // перерисовка после правок справочников
   const [editor, setEditor] = useState<EditorState | null>(null);
   const [filter, setFilter] = useState<MatrixFilter>({ orgId: "all", year: "all" });
+  // постоянные ссылки: #r=<ординатор> и #c=<заведующий>
+  const hash = /^#(r|c)=(.+)$/.exec(location.hash);
+  const [tab, setTab] = useState<string>(hash?.[1] === "r" ? "resident" : "curator");
+  const [linkId] = useState<string | null>(hash ? decodeURIComponent(hash[2]) : null);
+  const remember = (kind: "r" | "c", id: string) => history.replaceState(null, "", `#${kind}=${id}`);
 
   const load = useCallback(async (initial: boolean, y?: string) => {
     try {
@@ -156,16 +162,20 @@ export default function App() {
       </header>
 
       <main className="mx-auto max-w-[1440px] px-10 pb-10">
-        <Tabs defaultValue="curator">
+        <Tabs value={tab} onValueChange={setTab}>
           <TabsList className="mb-6 mt-6 h-auto w-full flex-wrap justify-start gap-7 rounded-none bg-transparent p-0" style={{ borderBottom: `1px solid ${RULE}` }}>
             <TabsTrigger className={tabCls} value="curator">Кабинет заведующего</TabsTrigger>
+            <TabsTrigger className={tabCls} value="resident">Кабинет ординатора</TabsTrigger>
             <TabsTrigger className={tabCls} value="matrix">График года</TabsTrigger>
             <TabsTrigger className={tabCls} value="calendar">Календарь</TabsTrigger>
             <TabsTrigger className={tabCls} value="edu">Учебная часть</TabsTrigger>
             <TabsTrigger className={tabCls} value="admin">{user ? "Правка" : "Вход"}</TabsTrigger>
           </TabsList>
           <TabsContent value="curator">
-            <CuratorView blocks={blocks} date={today} />
+            <CuratorView blocks={blocks} date={today} initialId={hash?.[1] === "c" ? linkId : null} onSelect={(id) => remember("c", id)} />
+          </TabsContent>
+          <TabsContent value="resident">
+            <ResidentView blocks={blocks} date={today} initialId={hash?.[1] === "r" ? linkId : null} onSelect={(id) => remember("r", id)} />
           </TabsContent>
           <TabsContent value="matrix">
             <Matrix blocks={blocks} date={today} user={user}

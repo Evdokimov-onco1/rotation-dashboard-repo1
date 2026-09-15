@@ -35,8 +35,10 @@ function Entry({ b, blocks, date, kind }: { b: Block; blocks: Block[]; date: str
   );
 }
 
-export function CuratorView({ blocks, date }: { blocks: Block[]; date: string }) {
-  const [curatorId, setCuratorId] = useState<string>(CURATORS[0]?.id ?? "");
+export function CuratorView({ blocks, date, initialId, onSelect }:
+  { blocks: Block[]; date: string; initialId?: string | null; onSelect?: (id: string) => void }) {
+  const [curatorId, setCuratorId] = useState<string>(initialId && CURATORS.some((c) => c.id === initialId) ? initialId : (CURATORS[0]?.id ?? ""));
+  const pick = (id: string) => { setCuratorId(id); onSelect?.(id); };
   const cur = curatorById(curatorId);
   const alive = blocks.filter((b) => residentById(b.residentId)?.active);
   const mine = alive.filter((b) => b.curatorId === curatorId);
@@ -58,7 +60,7 @@ export function CuratorView({ blocks, date }: { blocks: Block[]; date: string })
       <div className="w-full max-w-[760px]">
         <div className="flex flex-wrap items-baseline gap-x-3.5 gap-y-1">
           <span className="text-[13px]" style={{ color: MUTE }}>Я заведующий</span>
-          <Select value={curatorId} onValueChange={setCuratorId}>
+          <Select value={curatorId} onValueChange={pick}>
             <SelectTrigger className="serif h-auto w-auto max-w-full border-0 border-b border-dotted bg-transparent px-0 py-0.5 text-[20px] shadow-none" style={{ borderColor: INK }}>
               <SelectValue />
             </SelectTrigger>
