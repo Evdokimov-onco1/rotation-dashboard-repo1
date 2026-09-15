@@ -25,9 +25,10 @@ interface Drag {
   rowTop: number;                 // верх строки-цели относительно обёртки таблицы
 }
 
-export function Matrix({ blocks, date, user, onCellClick, onCreateAt, onBlockChanged, filter, setFilter }:
+export function Matrix({ blocks, date, user, onCellClick, onCreateAt, onBlockChanged, filter, setFilter, onLoginClick }:
   {
     blocks: Block[]; date: string; user: User | null;
+    onLoginClick?: () => void;
     onCellClick: (b: Block) => void;
     onCreateAt: (residentId: string, week: number) => void;
     onBlockChanged: (b: Block) => void;
@@ -247,6 +248,12 @@ export function Matrix({ blocks, date, user, onCellClick, onCreateAt, onBlockCha
   return (
     <div>
       <div className="mb-3 flex flex-wrap items-center gap-4 text-[13px]">
+        {!user && (
+          <span style={{ color: MUTE }}>
+            Просмотр. Для правки <button type="button" onClick={onLoginClick} className="underline decoration-dotted underline-offset-2" style={{ color: RED }}>войдите</button>.
+          </span>
+        )}
+        {user && <span style={{ color: MUTE }}>Правка включена: блоки можно перетаскивать.</span>}
         <Select value={filter.orgId} onValueChange={(v) => setFilter({ ...filter, orgId: v })}>
           <SelectTrigger className="h-8 w-[220px] border-0 border-b border-dotted bg-transparent px-0 shadow-none" style={{ borderColor: INK }}><SelectValue /></SelectTrigger>
           <SelectContent>
@@ -362,6 +369,13 @@ export function Matrix({ blocks, date, user, onCellClick, onCreateAt, onBlockCha
         Закрашенный блок — куратор назначен, контурный — ещё нет. Красная полоса — текущая неделя, штриховка — неделя без ротации.
         {user ? " Перетащите блок, чтобы сдвинуть его или передать другому ординатору; потяните за край, чтобы изменить длину; двойной клик по пустой клетке — новый блок. Изменения сохраняются сразу." : " Нажмите на блок, чтобы открыть карточку."}
       </p>
+      {!user && (
+        <p className="mt-1 text-[13px]">
+          Чтобы переставлять блоки, нужно войти.{" "}
+          <button type="button" onClick={onLoginClick} className="underline decoration-dotted underline-offset-2" style={{ color: RED }}>Войти</button>
+          {" "}как учебная часть или распорядитель.
+        </p>
+      )}
     </div>
   );
 }
