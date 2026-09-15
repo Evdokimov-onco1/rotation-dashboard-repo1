@@ -61,8 +61,14 @@ jobs:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
         run: |
           mkdir -p ~/.ssh
-          # ключ, скопированный из веб-консоли хостинга, приходит с хвостами пробелов и \r — вычищаем
-          printf '%s\n' "$DEPLOY_SSH_KEY" | tr -d '\r' | sed 's/[[:space:]]*$//' | sed '/^$/d' > ~/.ssh/deploy_key
+          # Секрет может быть либо самим ключом (BEGIN…END), либо его base64 в одну строку
+          # (вывод `base64 -w0 ~/.ssh/rotation_deploy`). Из веб-консоли хостинга текст приходит
+          # с хвостами пробелов и \r — вычищаем.
+          if printf '%s' "$DEPLOY_SSH_KEY" | grep -q 'BEGIN'; then
+            printf '%s\n' "$DEPLOY_SSH_KEY" | tr -d '\r' | sed 's/[[:space:]]*$//' | sed '/^$/d' > ~/.ssh/deploy_key
+          else
+            printf '%s' "$DEPLOY_SSH_KEY" | tr -d ' \t\r\n' | base64 -d > ~/.ssh/deploy_key
+          fi
           chmod 600 ~/.ssh/deploy_key
           if ! ssh-keygen -y -f ~/.ssh/deploy_key > /dev/null 2>&1; then
             echo "::error::Секрет DEPLOY_SSH_KEY не читается как ключ. Скопируйте файл ~/.ssh/rotation_deploy целиком (от BEGIN до END) и сохраните секрет заново."
