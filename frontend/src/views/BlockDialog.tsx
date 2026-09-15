@@ -78,7 +78,7 @@ export function BlockDialog({ state, setState, user, blocks, onSaved, onDeleted,
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-base">
+          <DialogTitle className="serif text-[18px] font-semibold">
             {admin ? (isNew ? "Новый блок ротации" : "Редактирование блока") : "Блок ротации"}
           </DialogTitle>
         </DialogHeader>
@@ -91,12 +91,12 @@ export function BlockDialog({ state, setState, user, blocks, onSaved, onDeleted,
             <p>{u.name}</p>
             <p className="mono text-muted-foreground">{blockRangeLabel(state)}</p>
             <p className={state.curatorId ? "text-muted-foreground" : ""} style={state.curatorId ? undefined : { color: AMBER }}>
-              {state.curatorId ? "Куратор: " + curatorById(state.curatorId)!.fio : "⚠️ куратор не назначен"}
+              {state.curatorId ? "Куратор: " + curatorById(state.curatorId)!.fio : "Куратор ещё не назначен"}
             </p>
             {state.comment !== "" && <p className="text-muted-foreground">Комментарий: {state.comment}</p>}
             <p className="pt-2 text-xs opacity-60">
               {user ? "Этот блок относится к другой организации, править его вы не можете."
-                : "Для правки войдите во вкладке «Админка»."}
+                : "Для правки войдите во вкладке «Правка»."}
             </p>
           </div>
         ) : (
@@ -159,7 +159,7 @@ export function BlockDialog({ state, setState, user, blocks, onSaved, onDeleted,
                 onChange={(e) => setState({ ...state, comment: e.target.value })}
                 className="bg-white" />
             </div>
-            {msg && <p className="text-sm text-red-700">{msg}</p>}
+            {msg && <p className="text-sm text-[color:var(--red)]">{msg}</p>}
           </div>
         )}
 

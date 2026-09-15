@@ -62,8 +62,8 @@ function AuditDialog({ onClose }: { onClose: () => void }) {
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-2xl">
-        <DialogHeader><DialogTitle className="text-base">Журнал правок · {yearLabel()}</DialogTitle></DialogHeader>
-        {err && <p className="text-sm text-red-700">{err}</p>}
+        <DialogHeader><DialogTitle className="serif text-[18px] font-semibold">Журнал правок · {yearLabel()}</DialogTitle></DialogHeader>
+        {err && <p className="text-sm text-[color:var(--red)]">{err}</p>}
         {!err && entries === null && <p className="text-sm text-muted-foreground">Загрузка…</p>}
         {entries !== null && entries.length === 0 && (
           <p className="text-sm text-muted-foreground">Правок пока не было.</p>
@@ -151,19 +151,19 @@ function GeneratorCard({ user, blocks, onApplied }:
       <p className="mt-2 text-xs text-muted-foreground">
         Блоки до выбранной недели сохраняются, прошедшее можно править вручную. Превышение порога загрузки — предупреждение, не запрет.
       </p>
-      {err && <p className="mt-2 text-sm text-red-700">{err}</p>}
+      {err && <p className="mt-2 text-sm text-[color:var(--red)]">{err}</p>}
 
       {result && (
         <Dialog open onOpenChange={(o) => !o && setResult(null)}>
           <DialogContent className="max-w-4xl">
             <DialogHeader>
-              <DialogTitle className="text-base">
+              <DialogTitle className="serif text-[18px] font-semibold">
                 Предпросмотр: {result.residentIds.length} ординаторов, {result.blocks.length} блоков · вариант №{result.seed}
               </DialogTitle>
             </DialogHeader>
             <div className="max-h-[60vh] space-y-3 overflow-y-auto pr-1 text-sm">
               {result.warnings.length > 0 && (
-                <div className="rounded-[3px] border border-amber-300 bg-amber-50 px-3 py-2">
+                <div className="border-l-2 border-[color:var(--red)] pl-3 py-1">
                   <div className="font-medium" style={{ color: AMBER }}>
                     Предупреждения · превышение порога {result.threshold}: {result.excess} человеко-недель
                   </div>
@@ -228,7 +228,7 @@ function ResidentDialog({ initial, id, user, onSaved, onClose }:
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-lg">
-        <DialogHeader><DialogTitle className="text-base">{id ? "Ординатор" : "Новый ординатор"}</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle className="serif text-[18px] font-semibold">{id ? "Ординатор" : "Новый ординатор"}</DialogTitle></DialogHeader>
         <div className="space-y-3 text-sm">
           <div><FieldLabel>ФИО</FieldLabel>
             <Input id="res-fio" value={s.fio} onChange={(e) => setS({ ...s, fio: e.target.value })} className="bg-white" /></div>
@@ -258,7 +258,7 @@ function ResidentDialog({ initial, id, user, onSaved, onClose }:
             <input id="res-active" type="checkbox" checked={s.active !== false} onChange={(e) => setS({ ...s, active: e.target.checked })} />
             активен (отключённые не показываются в матрице и кабинетах)
           </label>
-          {msg && <p className="text-sm text-red-700">{msg}</p>}
+          {msg && <p className="text-sm text-[color:var(--red)]">{msg}</p>}
         </div>
         <DialogFooter className="gap-2">
           <Button variant="outline" onClick={onClose} disabled={busy}>Отмена</Button>
@@ -280,7 +280,7 @@ function ResidentsCard({ user, onChanged }: { user: User; onChanged: (r: Residen
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-sm">
           <thead>
-            <tr className="caps-label text-[10px] text-muted-foreground">
+            <tr className="text-xs text-muted-foreground">
               <th className="border-b px-2 py-1 text-left">ФИО</th>
               <th className="border-b px-2 py-1 text-left">Орг.</th>
               <th className="border-b px-2 py-1 text-left">Год</th>
@@ -336,7 +336,7 @@ function UsersCard() {
   return (
     <SectionCard title="Пользователи" hint="Учебная часть видит и правит всё; распорядитель — только ординаторов своей организации."
       actions={<Button variant="outline" size="sm" onClick={() => setEditing({ id: null, data: { login: "", name: "", role: "dispatcher", orgId: ORGS[0]?.id ?? null, password: "" } })}>+ Добавить</Button>}>
-      {err && <p className="mb-2 text-sm text-red-700">{err}</p>}
+      {err && <p className="mb-2 text-sm text-[color:var(--red)]">{err}</p>}
       {users === null && !err && <p className="text-sm text-muted-foreground">Загрузка…</p>}
       {users && users.map((u) => (
         <div key={u.id} className={"flex flex-wrap items-center gap-3 border-b py-1.5 text-sm last:border-0 " + (u.active ? "" : "text-muted-foreground line-through")}>
@@ -349,7 +349,7 @@ function UsersCard() {
       {editing && d && (
         <Dialog open onOpenChange={(o) => !o && setEditing(null)}>
           <DialogContent className="max-w-md">
-            <DialogHeader><DialogTitle className="text-base">{editing.id ? "Пользователь" : "Новый пользователь"}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle className="serif text-[18px] font-semibold">{editing.id ? "Пользователь" : "Новый пользователь"}</DialogTitle></DialogHeader>
             <div className="space-y-3 text-sm">
               {!editing.id && <div><FieldLabel>Логин (латиница)</FieldLabel>
                 <Input id="u-login" value={d.login ?? ""} onChange={(e) => setEditing({ ...editing, data: { ...d, login: e.target.value } })} className="bg-white" /></div>}
@@ -471,12 +471,12 @@ export function AdminView({ blocks, date, user, onLogin, onLogout, openEditor, o
         </div>
       </div>
 
-      {err && <p className="text-sm text-red-700">{err}</p>}
+      {err && <p className="text-sm text-[color:var(--red)]">{err}</p>}
 
       <GeneratorCard user={user} blocks={blocks} onApplied={onBlocksReplaced} />
 
       {over.length > 0 && (
-        <SectionCard accent={AMBER} className="bg-amber-50/60"
+        <SectionCard accent={AMBER}
           title={`Загрузка выше порога (${SETTINGS.capacityThreshold} чел.) · ${over.length}`}
           hint="Справочно: где одновременно больше ординаторов, чем задано порогом. Не блокирует, но стоит посмотреть.">
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">

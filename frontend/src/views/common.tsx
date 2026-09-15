@@ -5,10 +5,15 @@ import { Input } from "@/components/ui/input";
 import { unitById, orgById, type User } from "../data";
 import { authLogin, errText } from "../api";
 
-/* палитра «Пост отделения» */
-export const INK = "#16323c";
-export const PETROL = "#0f4c5c";
-export const AMBER = "#b45309";
+/* тема «Журнал»: бумага, чернила, одна красная краска */
+export const INK = "#1F2933";
+export const RED = "#B3261E";
+export const MUTE = "#6B7A84";
+export const RULE = "#D9DEDC";
+export const PAPER = "#FCFCFA";
+/* прежние имена, чтобы не трогать все экраны разом */
+export const PETROL = INK;
+export const AMBER = RED;
 
 export const ROLE_LABEL: Record<User["role"], string> = { admin: "учебная часть", dispatcher: "распорядитель" };
 
@@ -19,6 +24,17 @@ export const userScopeText = (user: User) =>
   user.role === "admin"
     ? "учебная часть, доступ ко всем данным"
     : `распорядитель когорты ${orgById(user.orgId ?? "")?.short ?? user.orgId}`;
+
+const MONTHS_GEN = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+const WEEKDAYS = ["воскресенье", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота"];
+const WEEKDAYS_IN = ["в воскресенье", "в понедельник", "во вторник", "в среду", "в четверг", "в пятницу", "в субботу"];
+
+/** «23 октября» */
+export const fmtLong = (iso: string) => `${+iso.slice(8, 10)} ${MONTHS_GEN[+iso.slice(5, 7) - 1]}`;
+/** «пятница» */
+export const weekdayName = (iso: string) => WEEKDAYS[new Date(iso + "T00:00:00").getDay()];
+/** «в пятницу» */
+export const weekdayIn = (iso: string) => WEEKDAYS_IN[new Date(iso + "T00:00:00").getDay()];
 
 export function LoginGate({ title, desc, onLogin }: { title: string; desc: string; onLogin: (u: User) => void }) {
   const [login, setLogin] = useState("");
@@ -40,7 +56,7 @@ export function LoginGate({ title, desc, onLogin }: { title: string; desc: strin
   };
   return (
     <Card className="max-w-sm">
-      <CardHeader><CardTitle className="text-base">{title}</CardTitle></CardHeader>
+      <CardHeader><CardTitle className="serif text-lg font-semibold">{title}</CardTitle></CardHeader>
       <CardContent className="space-y-3">
         <p className="text-sm text-muted-foreground">{desc}</p>
         <div className="grid gap-2">
@@ -52,7 +68,7 @@ export function LoginGate({ title, desc, onLogin }: { title: string; desc: strin
             onKeyDown={(e) => e.key === "Enter" && void submit()} className="bg-white" />
           <Button onClick={() => void submit()} disabled={busy}>{busy ? "…" : "Войти"}</Button>
         </div>
-        {err && <p className="text-sm text-red-700">{err}</p>}
+        {err && <p className="text-sm" style={{ color: RED }}>{err}</p>}
       </CardContent>
     </Card>
   );
@@ -65,12 +81,12 @@ export function UnitDot({ unitId }: { unitId: string }) {
 export function SectionCard({ title, hint, accent, children, className = "", actions }:
   { title: string; hint?: string; accent?: string; children: React.ReactNode; className?: string; actions?: React.ReactNode }) {
   return (
-    <Card className={"border " + className} style={accent ? { borderLeft: `3px solid ${accent}` } : undefined}>
+    <Card className={"border " + className} style={accent ? { borderLeft: `2px solid ${accent}` } : undefined}>
       <CardHeader className="pb-2">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
-            <CardTitle className="text-[15px]">{title}</CardTitle>
-            {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+            <CardTitle className="serif text-[17px] font-semibold">{title}</CardTitle>
+            {hint && <p className="mt-0.5 text-[13px] text-muted-foreground">{hint}</p>}
           </div>
           {actions}
         </div>
@@ -81,5 +97,5 @@ export function SectionCard({ title, hint, accent, children, className = "", act
 }
 
 export function FieldLabel({ children }: { children: React.ReactNode }) {
-  return <label className="caps-label mb-1 block text-[10px] text-muted-foreground">{children}</label>;
+  return <label className="mb-1 block text-xs text-muted-foreground">{children}</label>;
 }

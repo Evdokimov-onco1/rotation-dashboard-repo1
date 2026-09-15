@@ -46,9 +46,9 @@ export function EduView({ blocks, date, user, onLogin, onLogout }:
   const totalIncoming = rows.reduce((s, [, t]) => s + t.incoming.length, 0);
 
   const stat = (n: number, label: string, warn = false) => (
-    <div className={"border px-4 py-2 " + (warn && n > 0 ? "border-amber-400 bg-amber-50" : "border-border bg-white")}>
-      <div className="mono text-2xl font-semibold leading-none">{n}</div>
-      <div className="caps-label mt-1 text-[10px] text-muted-foreground">{label}</div>
+    <div className={"border px-4 py-2 " + (warn && n > 0 ? "border-[color:var(--red)] bg-white" : "border-border bg-white")}>
+      <div className="text-[30px] font-semibold leading-none">{n}</div>
+      <div className="text-xs text-muted-foreground">{label}</div>
     </div>
   );
 
@@ -72,7 +72,7 @@ export function EduView({ blocks, date, user, onLogin, onLogout }:
         return (
           <Card key={cid}>
             <CardHeader className="pb-2">
-              <CardTitle className="text-[15px]">
+              <CardTitle className="serif text-[17px] font-semibold">
                 {c.fio} <span className="text-sm font-normal text-muted-foreground">— {c.note}</span>
               </CardTitle>
             </CardHeader>
@@ -104,11 +104,11 @@ export function EduView({ blocks, date, user, onLogin, onLogout }:
       })}
 
       {unassigned.length > 0 && (
-        <SectionCard title="Задача: назначить кураторов" accent={AMBER} className="bg-amber-50/60">
+        <SectionCard title="Задача: назначить кураторов" accent={AMBER}>
           {unassigned.map((b) => {
             const u = unitById(b.unitId);
             return (
-              <div key={b.id} className="flex items-center gap-2 border-b border-amber-200 py-1.5 text-sm last:border-0">
+              <div key={b.id} className="flex items-center gap-2 border-b border-border py-1.5 text-sm last:border-0">
                 <span className="h-3 w-3 shrink-0 rounded-[2px]" style={{ background: u.color }} />
                 <span className="min-w-0 flex-1">
                   {residentById(b.residentId).fio} — {u.name},{" "}
@@ -120,7 +120,7 @@ export function EduView({ blocks, date, user, onLogin, onLogout }:
               </div>
             );
           })}
-          <p className="pt-2 text-xs text-muted-foreground">Назначение — во вкладке «Админка».</p>
+          <p className="pt-2 text-xs text-muted-foreground">Назначение — во вкладке «Правка».</p>
         </SectionCard>
       )}
 

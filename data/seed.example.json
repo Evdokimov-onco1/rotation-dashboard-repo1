@@ -391,7 +391,7 @@
    "name": "Онкологическое отделение №1",
    "territory": "С8",
    "curatorRule": "auto",
-   "color": "#3b6ea5",
+   "color": "#3F6E9A",
    "candidateCuratorIds": [
     "ronzin"
    ]
@@ -402,7 +402,7 @@
    "name": "Онкологическое отделение №2",
    "territory": "С8",
    "curatorRule": "auto",
-   "color": "#4f9d55",
+   "color": "#4E8A5E",
    "candidateCuratorIds": [
     "dalgatov"
    ]
@@ -413,7 +413,7 @@
    "name": "Онкологическое отделение №3",
    "territory": "С8",
    "curatorRule": "auto",
-   "color": "#c26a2e",
+   "color": "#B5652F",
    "candidateCuratorIds": [
     "hasan"
    ]
@@ -424,7 +424,7 @@
    "name": "Онкологическое отделение №4",
    "territory": "С8",
    "curatorRule": "auto",
-   "color": "#8a63b8",
+   "color": "#7A5FA5",
    "candidateCuratorIds": [
     "kobzev"
    ]
@@ -435,7 +435,7 @@
    "name": "Онкологическое отделение №5",
    "territory": "С8",
    "curatorRule": "auto",
-   "color": "#2ca6a4",
+   "color": "#2E8A8A",
    "candidateCuratorIds": [
     "levitskiy"
    ]
@@ -446,7 +446,7 @@
    "name": "ЦАОП гинеколог/маммолог/уролог",
    "territory": "А22, К57",
    "curatorRule": "manual",
-   "color": "#c9508f",
+   "color": "#B04A7C",
    "candidateCuratorIds": [
     "umyarov",
     "karpovich"
@@ -458,7 +458,7 @@
    "name": "ЦАОП общий онколог",
    "territory": "А22 / С8",
    "curatorRule": "manual",
-   "color": "#d94f4f",
+   "color": "#A7473F",
    "candidateCuratorIds": [
     "panshin",
     "khalzova",
@@ -471,7 +471,7 @@
    "name": "Химиотерапия дневной стационар (С8)",
    "territory": "С8",
    "curatorRule": "auto",
-   "color": "#b8952e",
+   "color": "#9C7B1F",
    "candidateCuratorIds": [
     "sekhina"
    ]
@@ -482,7 +482,7 @@
    "name": "Химиотерапия / дневной стационар (А22)",
    "territory": "А22",
    "curatorRule": "manual",
-   "color": "#a58a3a",
+   "color": "#B08B3A",
    "candidateCuratorIds": [
     "romanchuk",
     "andrianova"
@@ -494,7 +494,7 @@
    "name": "Лучевая терапия",
    "territory": "",
    "curatorRule": "auto",
-   "color": "#5f7d8c",
+   "color": "#5C6F80",
    "candidateCuratorIds": [
     "petukhov"
    ]
@@ -505,7 +505,7 @@
    "name": "Лучевая диагностика",
    "territory": "",
    "curatorRule": "manual",
-   "color": "#7d9a3c",
+   "color": "#6E8A2E",
    "candidateCuratorIds": [
     "donchenko",
     "kovaleva"
@@ -517,7 +517,7 @@
    "name": "ООПЛТ (круглосуточная химиотерапия)",
    "territory": "",
    "curatorRule": "auto",
-   "color": "#6b7280",
+   "color": "#4F5D6B",
    "candidateCuratorIds": [
     "fedorinov"
    ]
@@ -528,7 +528,7 @@
    "name": "Интервенционная ультрасонография",
    "territory": "",
    "curatorRule": "auto",
-   "color": "#3c8f7c",
+   "color": "#2F7F95",
    "candidateCuratorIds": [
     "lummer"
    ]

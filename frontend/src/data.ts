@@ -66,3 +66,7 @@ export const shortFio = (fio: string) => {
 };
 
 export const yearWord = (y: number) => `${y} год`;
+
+/** Короткое человеческое имя организации для текста: «ММКЦ «Коммунарка»», «НМХЦ им. Пирогова». */
+export const orgTitle = (o: Organization) =>
+  o.id === "mmcc" ? "ММКЦ «Коммунарка»" : o.id === "nmhc" ? "НМХЦ им. Пирогова" : o.short;

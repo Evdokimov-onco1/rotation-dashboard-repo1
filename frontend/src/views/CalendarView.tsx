@@ -67,7 +67,7 @@ export function CalendarView({ user, onWeeksSaved, onOverridesChanged }:
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-sm">
             <thead>
-              <tr className="caps-label text-[10px] text-muted-foreground">
+              <tr className="text-xs text-muted-foreground">
                 <th className="border-b px-2 py-1 text-left">№</th>
                 <th className="border-b px-2 py-1 text-left">Даты</th>
                 <th className="border-b px-2 py-1 text-left">Ротация</th>
@@ -105,7 +105,7 @@ export function CalendarView({ user, onWeeksSaved, onOverridesChanged }:
         {OVERRIDES.map((o) => (
           <div key={o.id} className="flex flex-wrap items-center gap-3 border-b py-1.5 text-sm last:border-0">
             <span className="mono">{fmtD(o.dateFrom)}{o.dateTo !== o.dateFrom ? ` – ${fmtD(o.dateTo)}` : ""}</span>
-            <span className={"rounded-[3px] px-1.5 py-0.5 text-xs " + (o.kind === "off" ? "bg-amber-100 text-amber-900" : "bg-emerald-100 text-emerald-900")}>
+            <span className={"rounded-[3px] px-1.5 py-0.5 text-xs " + (o.kind === "off" ? "bg-[#F6E3E1] text-[color:var(--red)]" : "bg-muted text-foreground")}>
               {o.kind === "off" ? "ротации нет" : "ротация идёт"}
             </span>
             <span className="min-w-0 flex-1 text-muted-foreground">{o.note ?? ""}</span>

@@ -4,13 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  WEEKS, UNITS, RESIDENTS, YEARS, OVERRIDES, SETTINGS, setScheduleData,
+  WEEKS, UNITS, RESIDENTS, YEARS, OVERRIDES, ORGS, SETTINGS, setScheduleData,
   type Block, type Resident, type User, type Week, type Override,
-  weekByNum, fmtD, yearLabel,
+  weekByNum, yearLabel, orgTitle,
 } from "./data";
 import { errText, fetchSchedule, authLogout } from "./api";
 import { currentWeekNum } from "./lib/calendar";
-import { INK, PETROL, canEditOrg } from "./views/common";
+import { RED, MUTE, RULE, canEditOrg, fmtLong, weekdayName } from "./views/common";
 import { CuratorView } from "./views/CuratorView";
 import { Matrix, type MatrixFilter } from "./views/Matrix";
 import { EduView } from "./views/EduView";
@@ -18,8 +18,8 @@ import { CalendarView } from "./views/CalendarView";
 import { AdminView } from "./views/AdminView";
 import { BlockDialog, type EditorState } from "./views/BlockDialog";
 
-const tabCls = "caps-label rounded-none border-b-2 border-transparent bg-transparent px-0 pb-2 pt-1 text-[11px] " +
-  "data-[state=active]:border-current data-[state=active]:bg-transparent data-[state=active]:shadow-none";
+const tabCls = "rounded-none border-b-2 border-transparent bg-transparent px-0 pb-2.5 pt-1 text-[14px] font-normal text-[color:var(--mute)] " +
+  "data-[state=active]:border-[color:var(--ink)] data-[state=active]:bg-transparent data-[state=active]:font-medium data-[state=active]:text-[color:var(--ink)] data-[state=active]:shadow-none";
 
 export default function App() {
   const [blocks, setBlocks] = useState<Block[]>([]);
@@ -80,25 +80,28 @@ export default function App() {
   const applyWeeks = (w: Week[]) => { WEEKS.splice(0, WEEKS.length, ...w); setTick((t) => t + 1); };
   const applyOverrides = (o: Override[]) => { OVERRIDES.splice(0, OVERRIDES.length, ...o); setTick((t) => t + 1); };
 
-  const openEditor = (b: Block | null) => {
+  const openEditor = (b: Block | null, at?: { residentId: string; week: number }) => {
     if (b) {
       setEditor({ id: b.id, residentId: b.residentId, unitId: b.unitId, from: b.from, to: b.to, curatorId: b.curatorId, comment: b.comment ?? "" });
       return;
     }
-    const first = RESIDENTS.find((r) => r.active && canEditOrg(user, r.orgId)) ?? RESIDENTS[0];
+    const first = at ? RESIDENTS.find((r) => r.id === at.residentId) : (RESIDENTS.find((r) => r.active && canEditOrg(user, r.orgId)) ?? RESIDENTS[0]);
     if (!first) return;
-    setEditor({ id: null, residentId: first.id, unitId: UNITS[0].id, from: 1, to: 4, curatorId: UNITS[0].candidates[0] ?? null, comment: "" });
+    const last = WEEKS.at(-1)?.num ?? 35;
+    const from = at ? at.week : 1;
+    setEditor({ id: null, residentId: first.id, unitId: UNITS[0].id, from, to: Math.min(last, from + 3), curatorId: UNITS[0].candidates[0] ?? null, comment: "" });
   };
 
   const curW = useMemo(() => (today ? currentWeekNum(today) : null), [today, loaded, tick]);
   const week = curW ? weekByNum(curW) : null;
   const yearIsCurrent = YEARS.find((y) => y.id === year)?.isCurrent ?? true;
+  const orgsText = ORGS.map(orgTitle).join(" и ");
 
   if (loadError) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background p-6">
         <Card className="max-w-md">
-          <CardHeader><CardTitle className="text-base">Не удалось загрузить график</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="serif text-lg">Не удалось загрузить график</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             <p className="text-sm text-muted-foreground">{loadError}</p>
             <Button onClick={() => void load(true)}>Повторить</Button>
@@ -117,63 +120,57 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b-2 bg-white" style={{ borderColor: INK }}>
-        <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-4 px-5 py-3">
-          <div className="flex items-center gap-4">
-            <div className="border-2 px-3 py-1.5 text-center" style={{ borderColor: INK }}>
-              <div className="caps-label text-[9px] text-muted-foreground">неделя</div>
-              <div className="mono text-xl font-bold leading-none">{curW ?? "—"}</div>
-              {week && <div className="mono mt-0.5 text-[9px] text-muted-foreground">{week.label}</div>}
-            </div>
-            <div>
-              <div className="caps-label text-[10px]" style={{ color: PETROL }}>
-                ММКЦ «Коммунарка» · Учебная часть
-              </div>
-              <h1 className="text-xl font-semibold leading-tight">Ротации ординаторов · {yearLabel()}</h1>
-            </div>
+      <header className="mx-auto max-w-[1440px] px-10 pt-7">
+        <div className="flex flex-wrap items-start justify-between gap-6">
+          <div>
+            <h1 className="serif text-[32px] font-semibold leading-[1.1]">Ротации ординаторов</h1>
+            <p className="mt-1.5 text-[14px]" style={{ color: MUTE }}>
+              Учебный год {yearLabel()}, {orgsText}. Сегодня {weekdayName(today)}, {fmtLong(today)}.
+            </p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             {YEARS.length > 1 && (
-              <div>
-                <span className="caps-label block text-[10px] text-muted-foreground">учебный год</span>
-                <Select value={year} onValueChange={(v) => { setNotice(null); void load(false, v); }}>
-                  <SelectTrigger className="h-8 w-[150px] bg-white"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {YEARS.map((y) => <SelectItem key={y.id} value={y.id}>{y.label}{y.isCurrent ? " · текущий" : ""}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
+              <Select value={year} onValueChange={(v) => { setNotice(null); void load(false, v); }}>
+                <SelectTrigger className="h-9 w-[210px] bg-white text-[13px]" style={{ borderColor: RULE }}><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {YEARS.map((y) => <SelectItem key={y.id} value={y.id}>{y.label}{y.isCurrent ? ", текущий год" : ", архив"}</SelectItem>)}
+                </SelectContent>
+              </Select>
             )}
-            <div className="text-right">
-              <span className="caps-label text-[10px] text-muted-foreground">сегодня</span>
-              <div className="mono text-sm">{fmtD(today)}</div>
+            <div className="inline-flex flex-col items-center rounded-[3px] px-3.5 pb-2 pt-1.5 leading-none"
+              style={{ border: `2px solid ${RED}`, color: RED, transform: "rotate(-2deg)", opacity: 0.92 }}>
+              <span className="text-[11px]">неделя</span>
+              <span className="my-0.5 text-[30px] font-semibold">{curW ?? "—"}</span>
+              <span className="text-[11px]">{week ? `${fmtLong(week.start).split(" ")[0]}–${fmtLong(week.end)}` : "вне учебного года"}</span>
             </div>
           </div>
         </div>
         {notice && (
-          <div className="border-t bg-red-50 px-5 py-1 text-center text-xs text-red-800">{notice}</div>
+          <div className="mt-3 text-[13px]" style={{ color: RED }}>{notice}</div>
         )}
         {!yearIsCurrent && (
-          <div className="border-t bg-amber-50 px-5 py-1 text-center text-xs text-amber-900">
-            Вы смотрите архив: {yearLabel()}. Кабинеты считаются от сегодняшней даты, поэтому в архиве они пусты.
+          <div className="mt-3 text-[13px]" style={{ color: MUTE }}>
+            Это архив {yearLabel()}. Кабинеты считаются от сегодняшней даты, поэтому в архиве они пусты.
           </div>
         )}
       </header>
 
-      <main className="mx-auto max-w-[1400px] px-5 py-5">
+      <main className="mx-auto max-w-[1440px] px-10 pb-10">
         <Tabs defaultValue="curator">
-          <TabsList className="mb-5 h-auto w-full flex-wrap justify-start gap-6 rounded-none border-b bg-transparent p-0">
-            <TabsTrigger className={tabCls} value="curator">Кабинет куратора</TabsTrigger>
-            <TabsTrigger className={tabCls} value="matrix">Матрица</TabsTrigger>
+          <TabsList className="mb-6 mt-6 h-auto w-full flex-wrap justify-start gap-7 rounded-none bg-transparent p-0" style={{ borderBottom: `1px solid ${RULE}` }}>
+            <TabsTrigger className={tabCls} value="curator">Кабинет заведующего</TabsTrigger>
+            <TabsTrigger className={tabCls} value="matrix">График года</TabsTrigger>
             <TabsTrigger className={tabCls} value="calendar">Календарь</TabsTrigger>
-            <TabsTrigger className={tabCls} value="edu">Учебная часть{user && " 🔓"}</TabsTrigger>
-            <TabsTrigger className={tabCls} value="admin">Админка{user && " 🔓"}</TabsTrigger>
+            <TabsTrigger className={tabCls} value="edu">Учебная часть</TabsTrigger>
+            <TabsTrigger className={tabCls} value="admin">{user ? "Правка" : "Вход"}</TabsTrigger>
           </TabsList>
           <TabsContent value="curator">
             <CuratorView blocks={blocks} date={today} />
           </TabsContent>
           <TabsContent value="matrix">
-            <Matrix blocks={blocks} date={today} onCellClick={(b) => openEditor(b)} filter={filter} setFilter={setFilter} />
+            <Matrix blocks={blocks} date={today} user={user}
+              onCellClick={(b) => openEditor(b)} onCreateAt={(rid, w) => openEditor(null, { residentId: rid, week: w })}
+              onBlockChanged={applyBlock} filter={filter} setFilter={setFilter} />
           </TabsContent>
           <TabsContent value="calendar">
             <CalendarView key={year + ":" + tick} user={user} onWeeksSaved={applyWeeks} onOverridesChanged={applyOverrides} />
