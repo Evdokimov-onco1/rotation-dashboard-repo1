@@ -90,16 +90,17 @@ Backend ищет конфиг сам: для веб-запросов — `rotati
 
 ## 4. SSH-доступ и ключ для деплоя
 
-1. Панель → **«SSH»** → включить SSH-доступ, узнать хост и порт (обычно `ЛОГИН.timeweb.ru`, 22).
+1. Панель → **«SSH»** → включить SSH-доступ. Хост — имя сервера из приглашения консоли
+   (`cl801264@vh464` → `vh464.timeweb.ru`), порт 22.
 2. На **своём компьютере** сгенерируйте пару ключей (Enter на все вопросы):
    ```bash
    ssh-keygen -t ed25519 -f ~/.ssh/timeweb_deploy -N ""
    ```
 3. Добавьте **публичный** ключ на хостинг:
    ```bash
-   ssh-copy-id -i ~/.ssh/timeweb_deploy.pub ЛОГИН@ЛОГИН.timeweb.ru
+   ssh-copy-id -i ~/.ssh/timeweb_deploy.pub ЛОГИН@vh464.timeweb.ru
    ```
-4. Проверьте вход без пароля: `ssh -i ~/.ssh/timeweb_deploy ЛОГИН@ЛОГИН.timeweb.ru` →
+4. Проверьте вход без пароля: `ssh -i ~/.ssh/timeweb_deploy ЛОГИН@vh464.timeweb.ru` →
    `pwd` покажет домашний каталог. Там же создайте каталоги:
    ```bash
    mkdir -p ~/rotation-backend ~/rotation-private ~/backups
@@ -112,7 +113,7 @@ Backend ищет конфиг сам: для веб-запросов — `rotati
 панели или `scp`:
 
 ```bash
-scp -i ~/.ssh/timeweb_deploy data/private/*.json ЛОГИН@ЛОГИН.timeweb.ru:~/rotation-private/
+scp -i ~/.ssh/timeweb_deploy data/private/*.json ЛОГИН@vh464.timeweb.ru:~/rotation-private/
 ```
 
 ## 6. Секреты GitHub
@@ -122,7 +123,7 @@ New repository secret**. Нужны шесть секретов:
 
 | Секрет | Значение (пример) |
 |---|---|
-| `DEPLOY_HOST` | `ЛОГИН.timeweb.ru` |
+| `DEPLOY_HOST` | имя сервера из приглашения SSH-консоли, например `vh464.timeweb.ru` (не логин!) |
 | `DEPLOY_PORT` | `22` |
 | `DEPLOY_USER` | `ЛОГИН` |
 | `DEPLOY_SSH_KEY` | содержимое **приватного** файла `~/.ssh/timeweb_deploy` целиком, со строками BEGIN/END |

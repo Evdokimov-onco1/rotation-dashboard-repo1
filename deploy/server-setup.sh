@@ -69,11 +69,13 @@ prepare)
   chmod 600 "$H/.ssh/authorized_keys"
 
   USER_NAME=$(whoami)
+  SERVER="$(hostname -s).timeweb.ru"     # имя сервера из приглашения консоли, например vh464
+  getent hosts "$SERVER" >/dev/null 2>&1 || SERVER="$(hostname -f)"
   line
   echo "Готово. Теперь в GitHub: Settings → Secrets and variables → Actions → New repository secret."
   echo "Заведите шесть секретов, значения копируйте отсюда:"
   line
-  printf '%-20s %s\n' "DEPLOY_HOST"        "$USER_NAME.timeweb.ru"
+  printf '%-20s %s\n' "DEPLOY_HOST"        "$SERVER"
   printf '%-20s %s\n' "DEPLOY_PORT"        "22"
   printf '%-20s %s\n' "DEPLOY_USER"        "$USER_NAME"
   printf '%-20s %s\n' "DEPLOY_WEBROOT"     "$WEBROOT"
