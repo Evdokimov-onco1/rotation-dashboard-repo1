@@ -1,5 +1,5 @@
 # Деплой на виртуальный хостинг Timeweb при пуше в main.
-# Требуемые секреты репозитория — см. docs/DEPLOY.md, раздел 5.
+# Требуемые секреты репозитория — см. docs/DEPLOY.md, раздел 6.
 
 name: Deploy
 
@@ -29,7 +29,7 @@ jobs:
             [ -z "$(eval echo "\$$v")" ] && missing="$missing $v"
           done
           if [ -n "$missing" ]; then
-            echo "::error::Не заполнены секреты:$missing. Настройте их по docs/DEPLOY.md (раздел 5) и перезапустите workflow."
+            echo "::error::Не заполнены секреты:$missing. Настройте их по docs/DEPLOY.md (раздел 6) и перезапустите workflow."
             exit 1
           fi
 
