@@ -21,7 +21,8 @@ function session_boot(): void
         'path'     => '/',
         'httponly' => true,
         'samesite' => 'Lax',
-        'secure'   => (($_SERVER['HTTPS'] ?? '') !== '' && $_SERVER['HTTPS'] !== 'off'),
+        'secure'   => (($_SERVER['HTTPS'] ?? '') !== '' && $_SERVER['HTTPS'] !== 'off')
+                      || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https'),
     ]);
     session_start();
 }
