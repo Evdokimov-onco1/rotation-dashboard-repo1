@@ -48,7 +48,9 @@ prepare)
           "db_user" => getenv("DBUSER"), "db_pass" => getenv("DBPASS"), "notify_log" => getenv("LOG")];
     file_put_contents($argv[1], "<?php\nreturn " . var_export($c, true) . ";\n");
   ' "$CFG"
-  chmod 600 "$CFG"
+  # 644: PHP сайта на Timeweb работает не под пользователем аккаунта, ему нужно право чтения;
+  # файл лежит вне webroot'а, по адресу сайта недоступен
+  chmod 644 "$CFG"
 
   # проверка, что база отвечает
   if ! php -r '

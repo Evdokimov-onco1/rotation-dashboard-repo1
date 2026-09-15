@@ -83,7 +83,8 @@ return [
 ];
 ```
 
-Backend ищет конфиг сам: для веб-запросов — `rotation-config.php` в каталоге поддомена
+Права на файл — `644` (PHP сайта работает не под пользователем аккаунта, с `600` будет
+«Failed opening required»). Backend ищет конфиг сам: для веб-запросов — `rotation-config.php` в каталоге поддомена
 (`/home/c/ЛОГИН/rotation.mmcc-education.ru/`) или в домашнем каталоге (`/home/c/ЛОГИН/`);
 для консольных скриптов и cron путь передаётся переменной `ROTATION_CONFIG`. Образец —
 `backend/config.sample.php`.
