@@ -57,10 +57,17 @@ jobs:
           cp -r backend/api site/api
 
       - name: Ключ SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
         run: |
           mkdir -p ~/.ssh
-          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          # ключ, скопированный из веб-консоли хостинга, приходит с хвостами пробелов и \r — вычищаем
+          printf '%s\n' "$DEPLOY_SSH_KEY" | tr -d '\r' | sed 's/[[:space:]]*$//' | sed '/^$/d' > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
+          if ! ssh-keygen -y -f ~/.ssh/deploy_key > /dev/null 2>&1; then
+            echo "::error::Секрет DEPLOY_SSH_KEY не читается как ключ. Скопируйте файл ~/.ssh/rotation_deploy целиком (от BEGIN до END) и сохраните секрет заново."
+            exit 1
+          fi
           ssh-keyscan -p "${{ secrets.DEPLOY_PORT || 22 }}" -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
 
       - name: Деплой webroot (статика + api)
