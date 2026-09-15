@@ -83,7 +83,10 @@ return [
 ];
 ```
 
-Backend ищет конфиг сам: для веб-запросов — `rotation-config.php` в каталоге поддомена
+Важно: веб-процессы Timeweb не могут читать файлы вне папки сайта (даже владельцу —
+«Permission denied»), поэтому копия файла должна лежать и в webroot'е
+(`public_html/rotation-config.php`); по URL она закрыта `.htaccess`, деплой её не удаляет.
+Домашняя копия нужна cron'у и консоли. Backend ищет конфиг сам: для веб-запросов — `rotation-config.php` в каталоге поддомена
 (`/home/c/ЛОГИН/rotation.mmcc-education.ru/`) или в домашнем каталоге (`/home/c/ЛОГИН/`);
 для консольных скриптов и cron путь передаётся переменной `ROTATION_CONFIG`. Образец —
 `backend/config.sample.php`.

@@ -15,7 +15,14 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.html [L]
 
-# Файл с реквизитами БД, если лежит в webroot, снаружи недоступен
+# Файл с реквизитами БД лежит в webroot (веб-процессы Timeweb не читают файлы вне папки
+# сайта); снаружи по URL он недоступен.
 <Files "rotation-config.php">
-    Require all denied
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
 </Files>

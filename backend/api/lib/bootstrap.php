@@ -10,29 +10,44 @@ mb_internal_encoding('UTF-8');
 function config_path(): ?string
 {
     $env = getenv('ROTATION_CONFIG');
-    if ($env && is_file($env)) {
+    if ($env && config_openable($env)) {
         return $env;
     }
     $candidates = [];
+    // Сначала копия в самом webroot'е: веб-процессы Timeweb не читают файлы вне папки сайта
+    // (даже владельцу — Permission denied), а по URL файл закрыт .htaccess.
+    $candidates[] = dirname(__DIR__, 2) . '/rotation-config.php';   // <webroot>/rotation-config.php
     if (!empty($_SERVER['DOCUMENT_ROOT'])) {
+        $candidates[] = $_SERVER['DOCUMENT_ROOT'] . '/rotation-config.php';
         $candidates[] = dirname($_SERVER['DOCUMENT_ROOT']) . '/rotation-config.php';     // /home/c/ЛОГИН/поддомен/
         $candidates[] = dirname($_SERVER['DOCUMENT_ROOT'], 2) . '/rotation-config.php';  // /home/c/ЛОГИН/
     }
-    // По расположению самого файла: на хостинге lib/ лежит в <webroot>/api/lib
     $candidates[] = dirname(__DIR__, 3) . '/rotation-config.php';   // над webroot'ом (домашний каталог)
-    $candidates[] = dirname(__DIR__, 2) . '/rotation-config.php';   // в самом webroot'е (закрыт .htaccess)
-    // Домашний каталог пользователя, от имени которого работает PHP
     $home = getenv('HOME') ?: (function_exists('posix_getpwuid') ? (posix_getpwuid(posix_geteuid())['dir'] ?? '') : '');
     if ($home !== '') {
         $candidates[] = rtrim($home, '/') . '/rotation-config.php';
     }
     $candidates[] = dirname(__DIR__, 2) . '/config.php'; // backend/config.php (локальная разработка)
     foreach ($candidates as $p) {
-        if (is_file($p)) {
+        if (config_openable($p)) {
             return $p;
         }
     }
     return null;
+}
+
+/** Файл существует и реально открывается на чтение (is_readable на Timeweb может врать). */
+function config_openable(string $p): bool
+{
+    if (!is_file($p)) {
+        return false;
+    }
+    $h = @fopen($p, 'r');
+    if ($h === false) {
+        return false;
+    }
+    fclose($h);
+    return true;
 }
 
 function config(): array
