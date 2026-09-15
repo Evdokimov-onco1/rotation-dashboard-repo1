@@ -178,7 +178,7 @@ export default function App() {
             <ResidentView blocks={blocks} date={today} initialId={hash?.[1] === "r" ? linkId : null} onSelect={(id) => remember("r", id)} />
           </TabsContent>
           <TabsContent value="matrix">
-            <Matrix blocks={blocks} date={today} user={user}
+            <Matrix blocks={blocks} date={today} user={user} onLoginClick={() => setTab("admin")}
               onCellClick={(b) => openEditor(b)} onCreateAt={(rid, w) => openEditor(null, { residentId: rid, week: w })}
               onBlockChanged={applyBlock} filter={filter} setFilter={setFilter} />
           </TabsContent>
@@ -190,7 +190,7 @@ export default function App() {
           </TabsContent>
           <TabsContent value="admin">
             <AdminView blocks={blocks} date={today} user={user}
-              onLogin={setUser} onLogout={() => void logout()}
+              onLogin={(u) => { setUser(u); setTab("matrix"); }} onLogout={() => void logout()}
               openEditor={openEditor} onBlockChanged={applyBlock} onBlocksReplaced={setBlocks}
               onResidentChanged={applyResident} onYearsChanged={() => void load(false, year)}
               onThresholdChanged={(n) => { SETTINGS.capacityThreshold = n; setTick((t) => t + 1); }} />
