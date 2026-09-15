@@ -13,8 +13,8 @@
 
 ```
 /home/c/ЛОГИН/
-├── rotation.mmcc-education.ru/
-│   └── public_html/            ← webroot: статика фронтенда + api/  (заливает Actions)
+├── public_html/                 ← webroot «Основного сайта», к нему привязан поддомен
+│                                   (статика фронтенда + api/; заливает Actions)
 ├── rotation-backend/            ← backend/ и data/ вне webroot       (заливает Actions)
 │   ├── backend/  (notify.php, scripts/, api/…)
 │   └── data/     (seed.example.json — обезличенный пример)
@@ -35,12 +35,14 @@
 секретов, заполнение базы, пользователей и строки для Crontab.
 
 1. **Панель:** поддомен + SSL (раздел 1), база MySQL (раздел 2), включить SSH (раздел 4, п. 1).
+   В новой панели поддомен привязывается к сайту из раздела «Сайты»; папка «Основного сайта» —
+   `public_html` в домашнем каталоге, её и указывать скрипту как папку сайта.
 2. **Панель → веб-консоль**, вставить две строки:
    ```bash
    curl -fsSLo setup.sh https://raw.githubusercontent.com/Evdokimov-onco1/rotation-dashboard-repo1/main/deploy/server-setup.sh
    bash setup.sh prepare
    ```
-   Скрипт спросит поддомен, имя базы и пароль, проверит подключение и напечатает шесть значений
+   Скрипт спросит папку сайта, имя базы и пароль, проверит подключение и напечатает шесть значений
    для секретов GitHub, включая ключ.
 3. **GitHub → Settings → Secrets and variables → Actions:** завести шесть секретов из вывода скрипта.
 4. **Панель → файловый менеджер:** загрузить `2025-26.json` и `2026-27.json` в папку `rotation-private`.
@@ -53,8 +55,9 @@
 
 ## 1. Поддомен, PHP и SSL
 
-1. Панель Timeweb → **«Домены и поддомены»** → у домена `mmcc-education.ru` нажать
-   **«Добавить поддомен»** → имя `rotation`. Каталог сайта создастся автоматически.
+1. Панель Timeweb → **«Домены и SSL»** → домен `mmcc-education.ru` → вкладка **«Поддомены»** →
+   **«Добавить»** → имя `rotation`. Затем раздел **«Сайты»** → у сайта (обычно «Основной сайт»,
+   папка `public_html`) привязать поддомен. Webroot — папка этого сайта.
 2. Раздел **«Сайты»** (или настройки поддомена) → версия PHP — **8.2** или новее.
 3. Раздел **«SSL-сертификаты»** → выпустить бесплатный **Let's Encrypt** для
    `rotation.mmcc-education.ru`. Редирект HTTP→HTTPS делает `.htaccess` из деплоя.
@@ -87,16 +90,17 @@ Backend ищет конфиг сам: для веб-запросов — `rotati
 
 ## 4. SSH-доступ и ключ для деплоя
 
-1. Панель → **«SSH»** → включить SSH-доступ, узнать хост и порт (обычно `ЛОГИН.timeweb.ru`, 22).
+1. Панель → **«SSH»** → включить SSH-доступ. Хост — имя сервера из приглашения консоли
+   (`cl801264@vh464` → `vh464.timeweb.ru`), порт 22.
 2. На **своём компьютере** сгенерируйте пару ключей (Enter на все вопросы):
    ```bash
    ssh-keygen -t ed25519 -f ~/.ssh/timeweb_deploy -N ""
    ```
 3. Добавьте **публичный** ключ на хостинг:
    ```bash
-   ssh-copy-id -i ~/.ssh/timeweb_deploy.pub ЛОГИН@ЛОГИН.timeweb.ru
+   ssh-copy-id -i ~/.ssh/timeweb_deploy.pub ЛОГИН@vh464.timeweb.ru
    ```
-4. Проверьте вход без пароля: `ssh -i ~/.ssh/timeweb_deploy ЛОГИН@ЛОГИН.timeweb.ru` →
+4. Проверьте вход без пароля: `ssh -i ~/.ssh/timeweb_deploy ЛОГИН@vh464.timeweb.ru` →
    `pwd` покажет домашний каталог. Там же создайте каталоги:
    ```bash
    mkdir -p ~/rotation-backend ~/rotation-private ~/backups
@@ -109,7 +113,7 @@ Backend ищет конфиг сам: для веб-запросов — `rotati
 панели или `scp`:
 
 ```bash
-scp -i ~/.ssh/timeweb_deploy data/private/*.json ЛОГИН@ЛОГИН.timeweb.ru:~/rotation-private/
+scp -i ~/.ssh/timeweb_deploy data/private/*.json ЛОГИН@vh464.timeweb.ru:~/rotation-private/
 ```
 
 ## 6. Секреты GitHub
@@ -119,11 +123,11 @@ New repository secret**. Нужны шесть секретов:
 
 | Секрет | Значение (пример) |
 |---|---|
-| `DEPLOY_HOST` | `ЛОГИН.timeweb.ru` |
+| `DEPLOY_HOST` | имя сервера из приглашения SSH-консоли, например `vh464.timeweb.ru` (не логин!) |
 | `DEPLOY_PORT` | `22` |
 | `DEPLOY_USER` | `ЛОГИН` |
 | `DEPLOY_SSH_KEY` | содержимое **приватного** файла `~/.ssh/timeweb_deploy` целиком, со строками BEGIN/END |
-| `DEPLOY_WEBROOT` | `/home/c/ЛОГИН/rotation.mmcc-education.ru/public_html` |
+| `DEPLOY_WEBROOT` | `/home/c/ЛОГИН/public_html` (папка сайта из раздела «Сайты») |
 | `DEPLOY_BACKEND_DIR` | `/home/c/ЛОГИН/rotation-backend` |
 
 ⚠️ Деплой выполняет `rsync --delete`: содержимое webroot'а и `rotation-backend` приводится
