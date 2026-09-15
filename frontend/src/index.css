@@ -58,26 +58,39 @@
   }
 }
 
-/* ── Тема «Пост отделения» ─────────────────────────────── */
+/* ── Тема «Журнал»: бумага, чернила, одна красная краска ─────────────────── */
 :root {
-  --background: 150 8% 94%;
-  --foreground: 197 33% 16%;
+  --paper: #FCFCFA;
+  --ink: #1F2933;
+  --rule: #D9DEDC;
+  --red: #B3261E;
+  --mute: #6B7A84;
+
+  --background: 60 25% 98%;
+  --foreground: 210 24% 16%;
   --card: 0 0% 100%;
-  --card-foreground: 197 33% 16%;
+  --card-foreground: 210 24% 16%;
   --popover: 0 0% 100%;
-  --popover-foreground: 197 33% 16%;
-  --primary: 191 72% 21%;
+  --popover-foreground: 210 24% 16%;
+  --primary: 210 24% 16%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 160 12% 90%;
-  --secondary-foreground: 197 33% 16%;
-  --muted: 160 10% 91%;
-  --muted-foreground: 199 14% 38%;
-  --accent: 160 12% 90%;
-  --accent-foreground: 197 33% 16%;
-  --border: 158 12% 84%;
-  --input: 158 12% 78%;
-  --ring: 191 72% 28%;
-  --radius: 0.25rem;
+  --secondary: 160 8% 93%;
+  --secondary-foreground: 210 24% 16%;
+  --muted: 160 8% 94%;
+  --muted-foreground: 204 10% 47%;
+  --accent: 160 8% 93%;
+  --accent-foreground: 210 24% 16%;
+  --destructive: 3 69% 41%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 160 7% 86%;
+  --input: 160 7% 78%;
+  --ring: 3 69% 41%;
+  --radius: 0.125rem;
 }
-.mono { font-family: Consolas, "SF Mono", "Roboto Mono", Menlo, monospace; }
-.caps-label { text-transform: uppercase; letter-spacing: 0.09em; }
+body { font-family: "Onest", "Segoe UI", Arial, sans-serif; font-variant-numeric: tabular-nums; }
+.serif { font-family: "Literata", Georgia, "Times New Roman", serif; }
+.mono { font-variant-numeric: tabular-nums; }
+/* бывшая «капслок-подпись»: теперь обычная приглушённая подпись */
+.caps-label { text-transform: none; letter-spacing: 0; color: var(--mute); font-size: 12px; }
+.hatch { background-image: repeating-linear-gradient(135deg, transparent 0 3px, rgba(31,41,51,.07) 3px 4px); }
+.conflict { background: repeating-linear-gradient(135deg, #B3261E 0 6px, #D98C86 6px 12px) !important; color: #fff !important; }

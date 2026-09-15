@@ -16,6 +16,7 @@ if (PHP_SAPI !== 'cli') {
 require __DIR__ . '/api/lib/bootstrap.php';
 require __DIR__ . '/api/lib/auth.php';
 require __DIR__ . '/api/lib/schedule.php';
+require __DIR__ . '/api/lib/calendar.php';
 require __DIR__ . '/api/lib/windows.php';
 
 $today = $argv[1] ?? moscow_today();   // дату можно передать аргументом — для тестов
@@ -38,8 +39,9 @@ function notify_log(string $line): void
     echo $stamp . "\n";
 }
 
-if ($dow > 5) {
-    notify_log("({$today}) выходной день — рассылка не выполняется.");
+$ctx = schedule_context();   // текущий учебный год
+if (!is_rotation_day($ctx, $today)) {
+    notify_log("({$today}) выходной день или день без ротации по календарю — рассылка не выполняется.");
     exit(0);
 }
 
@@ -73,7 +75,6 @@ function deliver(string $botToken, ?string $chatId, string $recipient, string $t
     notify_log(($ok ? '[SENT]' : '[FAIL]') . " → {$recipient}:\n{$text}");
 }
 
-$ctx = schedule_context();
 $isMonday = $dow === 1;
 $dayNames = [1 => 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье'];
 
@@ -86,7 +87,7 @@ $push = static function (string $cid, string $text) use (&$perCurator) {
 
 foreach ($ctx['blocks'] as $b) {
     $cid = $b['curatorId'];
-    if ($cid === null) {
+    if ($cid === null || empty($ctx['residents'][$b['residentId']]['active'])) {
         continue;
     }
     $resident = $ctx['residents'][$b['residentId']]['fio'] ?? $b['residentId'];

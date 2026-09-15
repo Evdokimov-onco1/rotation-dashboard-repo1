@@ -6,7 +6,7 @@ declare(strict_types=1);
 date_default_timezone_set('Europe/Moscow');
 mb_internal_encoding('UTF-8');
 
-/** Путь к конфигу: ROTATION_CONFIG → над webroot'ом → рядом с backend (dev). */
+/** Путь к конфигу: ROTATION_CONFIG → над webroot'ом (каталог поддомена, затем домашний) → рядом с backend (dev). */
 function config_path(): ?string
 {
     $env = getenv('ROTATION_CONFIG');
@@ -15,7 +15,8 @@ function config_path(): ?string
     }
     $candidates = [];
     if (!empty($_SERVER['DOCUMENT_ROOT'])) {
-        $candidates[] = dirname($_SERVER['DOCUMENT_ROOT']) . '/rotation-config.php';
+        $candidates[] = dirname($_SERVER['DOCUMENT_ROOT']) . '/rotation-config.php';     // /home/c/ЛОГИН/поддомен/
+        $candidates[] = dirname($_SERVER['DOCUMENT_ROOT'], 2) . '/rotation-config.php';  // /home/c/ЛОГИН/
     }
     $candidates[] = dirname(__DIR__, 2) . '/config.php'; // backend/config.php (локальная разработка)
     foreach ($candidates as $p) {

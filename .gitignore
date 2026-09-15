@@ -9,3 +9,6 @@ bundle.html
 backend/config.php
 backend/logs/
 *.db
+
+# реальные данные (ПДн) — только локально и на хостинге
+data/private/
