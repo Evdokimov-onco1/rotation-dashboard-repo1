@@ -13,8 +13,8 @@
 
 ```
 /home/c/ЛОГИН/
-├── rotation.mmcc-education.ru/
-│   └── public_html/            ← webroot: статика фронтенда + api/  (заливает Actions)
+├── public_html/                 ← webroot «Основного сайта», к нему привязан поддомен
+│                                   (статика фронтенда + api/; заливает Actions)
 ├── rotation-backend/            ← backend/ и data/ вне webroot       (заливает Actions)
 │   ├── backend/  (notify.php, scripts/, api/…)
 │   └── data/     (seed.example.json — обезличенный пример)
@@ -35,12 +35,14 @@
 секретов, заполнение базы, пользователей и строки для Crontab.
 
 1. **Панель:** поддомен + SSL (раздел 1), база MySQL (раздел 2), включить SSH (раздел 4, п. 1).
+   В новой панели поддомен привязывается к сайту из раздела «Сайты»; папка «Основного сайта» —
+   `public_html` в домашнем каталоге, её и указывать скрипту как папку сайта.
 2. **Панель → веб-консоль**, вставить две строки:
    ```bash
    curl -fsSLo setup.sh https://raw.githubusercontent.com/Evdokimov-onco1/rotation-dashboard-repo1/main/deploy/server-setup.sh
    bash setup.sh prepare
    ```
-   Скрипт спросит поддомен, имя базы и пароль, проверит подключение и напечатает шесть значений
+   Скрипт спросит папку сайта, имя базы и пароль, проверит подключение и напечатает шесть значений
    для секретов GitHub, включая ключ.
 3. **GitHub → Settings → Secrets and variables → Actions:** завести шесть секретов из вывода скрипта.
 4. **Панель → файловый менеджер:** загрузить `2025-26.json` и `2026-27.json` в папку `rotation-private`.
@@ -53,8 +55,9 @@
 
 ## 1. Поддомен, PHP и SSL
 
-1. Панель Timeweb → **«Домены и поддомены»** → у домена `mmcc-education.ru` нажать
-   **«Добавить поддомен»** → имя `rotation`. Каталог сайта создастся автоматически.
+1. Панель Timeweb → **«Домены и SSL»** → домен `mmcc-education.ru` → вкладка **«Поддомены»** →
+   **«Добавить»** → имя `rotation`. Затем раздел **«Сайты»** → у сайта (обычно «Основной сайт»,
+   папка `public_html`) привязать поддомен. Webroot — папка этого сайта.
 2. Раздел **«Сайты»** (или настройки поддомена) → версия PHP — **8.2** или новее.
 3. Раздел **«SSL-сертификаты»** → выпустить бесплатный **Let's Encrypt** для
    `rotation.mmcc-education.ru`. Редирект HTTP→HTTPS делает `.htaccess` из деплоя.
@@ -123,7 +126,7 @@ New repository secret**. Нужны шесть секретов:
 | `DEPLOY_PORT` | `22` |
 | `DEPLOY_USER` | `ЛОГИН` |
 | `DEPLOY_SSH_KEY` | содержимое **приватного** файла `~/.ssh/timeweb_deploy` целиком, со строками BEGIN/END |
-| `DEPLOY_WEBROOT` | `/home/c/ЛОГИН/rotation.mmcc-education.ru/public_html` |
+| `DEPLOY_WEBROOT` | `/home/c/ЛОГИН/public_html` (папка сайта из раздела «Сайты») |
 | `DEPLOY_BACKEND_DIR` | `/home/c/ЛОГИН/rotation-backend` |
 
 ⚠️ Деплой выполняет `rsync --delete`: содержимое webroot'а и `rotation-backend` приводится

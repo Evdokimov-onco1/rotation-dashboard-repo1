@@ -21,11 +21,17 @@ case "$mode" in
 
 prepare)
   echo "Подготовка хостинга. Ответьте на четыре вопроса."
-  read -rp "Поддомен сайта (например rotation.mmcc-education.ru): " SUB
-  WEBROOT="$H/$SUB/public_html"
+  echo "Папка сайта — та, к которой в разделе «Сайты» привязан поддомен. У «Основного сайта» это public_html."
+  read -rp "Папка сайта [public_html]: " DIR
+  DIR=${DIR:-public_html}
+  DIR=${DIR#"$H"/}; DIR=${DIR%/}
+  WEBROOT="$H/$DIR"
   if [ ! -d "$WEBROOT" ]; then
-    echo "Папка $WEBROOT не найдена. Сначала создайте поддомен в панели (раздел «Домены и поддомены»)."
+    echo "Папка $WEBROOT не найдена. Посмотрите имя папки в разделе «Сайты» (или «Файловый менеджер») и запустите снова."
     exit 1
+  fi
+  if [ -n "$(ls -A "$WEBROOT" 2>/dev/null | grep -v '^\.well-known$' | grep -v '^cgi-bin$')" ]; then
+    echo "Внимание: в $WEBROOT уже есть файлы. Деплой заменит содержимое этой папки сайтом ротаций."
   fi
   read -rp "Имя базы MySQL (из раздела «Базы данных MySQL»): " DBNAME
   read -rp "Пользователь базы (обычно совпадает с именем базы) [$DBNAME]: " DBUSER
