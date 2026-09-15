@@ -14,3 +14,8 @@ RewriteCond %{REQUEST_URI} !^/api/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.html [L]
+
+# Файл с реквизитами БД, если лежит в webroot, снаружи недоступен
+<Files "rotation-config.php">
+    Require all denied
+</Files>

@@ -116,4 +116,8 @@ try {
 } catch (PDOException $e) {
     error_log('rotation api: ' . $e->getMessage());
     api_fail(500, 'Ошибка базы данных. Если сайт только что развёрнут — выполните backend/scripts/init_db.php.');
+} catch (Throwable $e) {
+    // Любая другая ошибка — тоже JSON, чтобы фронтенд показал причину, а не «500».
+    error_log('rotation api: ' . get_class($e) . ': ' . $e->getMessage());
+    api_fail(500, 'Внутренняя ошибка сервера: ' . $e->getMessage());
 }

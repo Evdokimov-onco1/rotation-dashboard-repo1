@@ -78,7 +78,7 @@ jobs:
 
       - name: Деплой webroot (статика + api)
         run: |
-          rsync -az --delete \
+          rsync -az --delete --exclude 'rotation-config.php' \
             -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.DEPLOY_PORT || 22 }}" \
             site/ "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_WEBROOT }}/"
 

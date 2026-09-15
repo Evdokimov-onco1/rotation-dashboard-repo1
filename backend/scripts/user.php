@@ -45,6 +45,14 @@ switch ($cmd) {
         if ($role === 'dispatcher' && !$org) {
             exit("Распорядителю нужна организация: --org=mmcc или --org=nmhc.\n");
         }
+        $exists = $pdo->prepare('SELECT id FROM users WHERE login = ?');
+        $exists->execute([$login]);
+        if ($exists->fetch()) {
+            $pdo->prepare('UPDATE users SET password_hash = ?, display_name = ?, role = ?, org_id = ?, active = 1 WHERE login = ?')
+                ->execute([password_hash($pass, PASSWORD_DEFAULT), $opts['name'], $role, $org, $login]);
+            echo "Пользователь «{$login}» уже был — пароль и данные обновлены.\n";
+            break;
+        }
         $pdo->prepare('INSERT INTO users (login, password_hash, display_name, role, org_id, active) VALUES (?, ?, ?, ?, ?, 1)')
             ->execute([$login, password_hash($pass, PASSWORD_DEFAULT), $opts['name'], $role, $org]);
         echo "Пользователь «{$login}» создан.\n";
