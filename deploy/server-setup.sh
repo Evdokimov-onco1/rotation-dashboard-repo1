@@ -48,9 +48,10 @@ prepare)
           "db_user" => getenv("DBUSER"), "db_pass" => getenv("DBPASS"), "notify_log" => getenv("LOG")];
     file_put_contents($argv[1], "<?php\nreturn " . var_export($c, true) . ";\n");
   ' "$CFG"
-  # 644: PHP сайта на Timeweb работает не под пользователем аккаунта, ему нужно право чтения;
-  # файл лежит вне webroot'а, по адресу сайта недоступен
   chmod 644 "$CFG"
+  # Веб-процессы Timeweb не читают файлы вне папки сайта — кладём копию в webroot
+  # (по URL она закрыта .htaccess, деплой её не трогает). Домашняя копия — для cron и консоли.
+  cp "$CFG" "$WEBROOT/rotation-config.php"
 
   # проверка, что база отвечает
   if ! php -r '
