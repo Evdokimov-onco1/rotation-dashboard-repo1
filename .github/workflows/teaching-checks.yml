@@ -1,0 +1,41 @@
+name: Teaching preview checks
+
+on:
+  pull_request:
+    paths: ['teaching/**', '.github/workflows/teaching-checks.yml', '.github/workflows/deploy.yml']
+  push:
+    branches: ['codex/teaching-workload-preview']
+    paths: ['teaching/**', '.github/workflows/teaching-checks.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: teaching/frontend/package-lock.json
+      - name: Build and UI calculations
+        working-directory: teaching/frontend
+        run: |
+          npm ci
+          npm run build
+          node tests/metrics.test.mjs
+      - name: PHP runtime
+        run: docker build -t teaching-test teaching
+      - name: Calculations, workflow, import and DOCX
+        run: |
+          docker run --rm -v "$PWD/teaching:/app" teaching-test php tests/rules_test.php
+          docker run --rm -v "$PWD/teaching:/app" teaching-test php tests/workflow_test.php
+          docker run --rm -v "$PWD/teaching:/app" teaching-test php tests/report_test.php
+          docker run --rm -v "$PWD/teaching:/app" teaching-test php tests/import_test.php
+      - name: Package and deployment isolation
+        run: |
+          python3 teaching/scripts/package.py
+          python3 teaching/tests/deploy_isolation_test.py

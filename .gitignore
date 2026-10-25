@@ -12,3 +12,16 @@ backend/logs/
 
 # реальные данные (ПДн) — только локально и на хостинге
 data/private/
+
+# Isolated teaching preview: runtime data and generated release only
+teaching/.local/
+teaching/.release/
+teaching/.package-*/
+teaching/public/_private/
+teaching/public/_app/
+teaching/public/assets/
+teaching/public/index.html
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+.superpowers/

@@ -1,0 +1,18 @@
+PRAGMA foreign_keys=ON;
+CREATE TABLE IF NOT EXISTS teachers(id INTEGER PRIMARY KEY,name TEXT NOT NULL,rate TEXT NOT NULL DEFAULT '0');
+CREATE TABLE IF NOT EXISTS groups(id TEXT PRIMARY KEY,course INTEGER NOT NULL,semester INTEGER NOT NULL,label TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY,login TEXT UNIQUE NOT NULL,password_hash TEXT NOT NULL,name TEXT NOT NULL,roles TEXT NOT NULL,teacher_id INTEGER REFERENCES teachers(id),active INTEGER NOT NULL DEFAULT 1);
+CREATE TABLE IF NOT EXISTS plans(id INTEGER PRIMARY KEY,teacher_id INTEGER NOT NULL REFERENCES teachers(id),group_id TEXT NOT NULL REFERENCES groups(id),discipline TEXT NOT NULL,month TEXT NOT NULL,type TEXT NOT NULL,hours_cent INTEGER NOT NULL CHECK(hours_cent>=0),source TEXT NOT NULL DEFAULT '',version INTEGER NOT NULL DEFAULT 1);
+CREATE TABLE IF NOT EXISTS events(id INTEGER PRIMARY KEY,type TEXT NOT NULL CHECK(type IN ('lecture','seminar')),title TEXT NOT NULL,teacher_id INTEGER NOT NULL REFERENCES teachers(id),group_id TEXT NOT NULL REFERENCES groups(id),date TEXT NOT NULL,start TEXT NOT NULL,end TEXT NOT NULL,hours_cent INTEGER NOT NULL CHECK(hours_cent>0),room TEXT NOT NULL DEFAULT '',status TEXT NOT NULL DEFAULT 'draft',version INTEGER NOT NULL DEFAULT 1,plan_id INTEGER REFERENCES plans(id));
+CREATE TABLE IF NOT EXISTS claims(id INTEGER PRIMARY KEY,work_id TEXT NOT NULL,revision INTEGER NOT NULL DEFAULT 1,version INTEGER NOT NULL DEFAULT 1,status TEXT NOT NULL DEFAULT 'draft',type TEXT NOT NULL,teacher_id INTEGER NOT NULL REFERENCES teachers(id),group_id TEXT NOT NULL REFERENCES groups(id),month TEXT NOT NULL,date TEXT NOT NULL DEFAULT '',quantity TEXT NOT NULL,hours_cent INTEGER NOT NULL CHECK(hours_cent>=0),discipline TEXT NOT NULL,event_id INTEGER REFERENCES events(id),notes TEXT NOT NULL DEFAULT '',author_id INTEGER NOT NULL,author_name TEXT NOT NULL,rule_version TEXT NOT NULL,formula TEXT NOT NULL,supersedes_id INTEGER REFERENCES claims(id),comment TEXT NOT NULL DEFAULT '',created_at TEXT NOT NULL,updated_at TEXT NOT NULL,approved_by TEXT,approved_at TEXT);
+CREATE UNIQUE INDEX IF NOT EXISTS one_approved_work ON claims(work_id) WHERE status='approved';
+CREATE UNIQUE INDEX IF NOT EXISTS one_pending_work ON claims(work_id) WHERE status IN ('draft','submitted','returned');
+CREATE INDEX IF NOT EXISTS claims_scope ON claims(teacher_id,month,status);
+CREATE INDEX IF NOT EXISTS claims_day ON claims(teacher_id,date,status);
+CREATE TABLE IF NOT EXISTS closures(teacher_id INTEGER NOT NULL REFERENCES teachers(id),month TEXT NOT NULL,closed_at TEXT NOT NULL,closed_by TEXT NOT NULL,PRIMARY KEY(teacher_id,month));
+CREATE TABLE IF NOT EXISTS audit(id INTEGER PRIMARY KEY,created_at TEXT NOT NULL,actor TEXT NOT NULL,actor_id INTEGER,action TEXT NOT NULL,detail TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS imports(token TEXT PRIMARY KEY,filename TEXT NOT NULL,sha256 TEXT NOT NULL,payload TEXT NOT NULL,created_at TEXT NOT NULL,committed_at TEXT,original_path TEXT NOT NULL);
+CREATE UNIQUE INDEX IF NOT EXISTS imported_sha ON imports(sha256) WHERE committed_at IS NOT NULL;
+CREATE TABLE IF NOT EXISTS reports(id INTEGER PRIMARY KEY,month TEXT NOT NULL,group_id TEXT,teacher_id INTEGER,created_by INTEGER NOT NULL,created_at TEXT NOT NULL,revision INTEGER NOT NULL,draft INTEGER NOT NULL,filename TEXT NOT NULL,snapshot TEXT NOT NULL,sha256 TEXT NOT NULL DEFAULT '');
+CREATE TABLE IF NOT EXISTS login_attempts(id INTEGER PRIMARY KEY,bucket TEXT NOT NULL,at INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS attempt_bucket ON login_attempts(bucket,at);
