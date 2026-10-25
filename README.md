@@ -16,12 +16,15 @@
 | `frontend/` | Фронтенд (React + TypeScript + Vite): реальная дата (МСК), данные и правки через API |
 | `backend/` | Backend (PHP 8.2+, без фреймворков): REST API, MySQL/SQLite через PDO, вход по паролю, генератор, журнал правок, `notify.php` |
 | `frontend-prototype/` | Исходный код прототипа |
+| `teaching/` | Изолированный пилот учебной нагрузки: [описание](teaching/README.md), [API](teaching/docs/API.md), [публикация](teaching/docs/DEPLOY.md) |
 
 ## Статус
 
 - **Сделано:** этап 1 (MVP) и этап 2 (учебные годы и архив, организации и распорядители,
   второй год, календарь недель и дней, генератор ротации, вход по логину и паролю, приватные данные).
-- **Дальше:** выкладка на хостинг по **[docs/DEPLOY.md](docs/DEPLOY.md)**; этап 3 — Telegram-рассылка.
+- **Размещено:** действующий сайт ротаций на `https://rotation.mmcc-education.ru/`. Инструкция обслуживания — **[docs/DEPLOY.md](docs/DEPLOY.md)**. Работоспособность Telegram-рассылки не подтверждена.
+- **Новый пилот:** модуль нагрузки в `teaching/` с отдельным входом, сборкой и БД. Он не заменяет ротации. Реальные источники и учётные данные в Git не включаются.
+- Исторические прототипы сохранены на прежних местах; для текущей разработки ротаций использовать `frontend/` и `backend/`, для нагрузки — `teaching/`.
 
 ## Реальные данные (ПДн)
 
@@ -43,8 +46,8 @@ php backend/scripts/init_db.php --seed=data/private/2026-27.json --current
 # (без реальных файлов: --seed=data/seed.example.json --current)
 
 # 3. Распорядители когорт
-php backend/scripts/user.php add --login=petukhov  --password=… --name="Петухов Е.А."  --role=dispatcher --org=mmcc
-php backend/scripts/user.php add --login=evdokimov --password=… --name="Евдокимов В.И." --role=dispatcher --org=nmhc
+php backend/scripts/user.php add --login=dispatcher-mmcc --password=… --name="Распорядитель ММКЦ"  --role=dispatcher --org=mmcc
+php backend/scripts/user.php add --login=dispatcher-nmhc --password=… --name="Распорядитель НМХЦ" --role=dispatcher --org=nmhc
 
 # 4. Сборка фронтенда
 cd frontend && npm install && npm run build && cd ..
@@ -72,9 +75,9 @@ bash backend/scripts/smoke_test.sh
 ## Продакшен (кратко; пошагово — [docs/DEPLOY.md](docs/DEPLOY.md))
 
 - Хостинг: виртуальный хостинг Timeweb, поддомен вида `rotation.mmcc-education.ru`.
-- БД: **MySQL из панели хостинга**; реквизиты — в `rotation-config.php` НАД webroot'ом.
+- БД: **MySQL из панели хостинга**; на текущем Timeweb `rotation-config.php` находится в webroot из-за ограничения доступа PHP и закрыт от HTTP корневым `.htaccess`. Не переносить его без проверки конфигурации сервера.
 - Раскладка: `frontend/dist/` — в корень поддомена, `backend/api/` — рядом в `api/`; сиды с
   реальными данными — в `~/rotation-private/`.
-- Crontab: `php backend/notify.php` по будням в 7:00 МСК (сухой прогон до этапа 3).
+- Предусмотрена команда `php backend/notify.php` (сухой прогон до этапа 3); наличие рабочего задания cron отдельно не подтверждалось.
 - Просмотр публичный; правка — по логину и паролю (учебная часть и распорядители),
   не более 5 попыток за 15 минут.

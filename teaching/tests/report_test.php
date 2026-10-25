@@ -1,0 +1,25 @@
+<?php
+require __DIR__.'/workflow_test.php';
+use Teaching\Report;
+act('month.close',['teacher_id'=>1,'month'=>'2026-10'],$approver);
+denied(fn()=>act('report.create',['month'=>'2026-10','draft'=>false]),'all teachers must be closed');
+$r=act('report.create',['month'=>'2026-10','teacher_id'=>1,'group_id'=>'c1s1g1','draft'=>false]);
+$frozen=act('report.snapshot',['id'=>$r['id']]);
+check($frozen['total_cent']===1400,'snapshot exact approved total');
+check($frozen['blocks'][0]['totals']['exam']===400,'exam correction maps to exam column');
+check($frozen['blocks'][0]['totals']['pass']===200,'pass column separate');
+$file=(new Report($s))->download($r['id'],$teacher);
+check(str_ends_with($file['path'],'.docx.blob')&&str_ends_with($file['filename'],'.docx'),'private storage and download filename are distinct');
+$zip=new ZipArchive();$zip->open($file['path']);$xml=$zip->getFromName('word/document.xml');$zip->close();
+check(str_contains($xml,'ПРОЕКТ')&&str_contains($xml,'октябрь 2026'),'document is a labelled project with correct period');
+check(str_contains($xml,'Преподаватель А'),'original blank populated');
+$r2=act('report.create',['month'=>'2027-01','teacher_id'=>2,'group_id'=>'c1s1g1','draft'=>true]);
+denied(fn()=>(new Report($s))->download($r2['id'],$teacher),'report ownership');
+$file2=(new Report($s))->download($r2['id'],$office);$zip->open($file2['path']);$xml2=$zip->getFromName('word/document.xml');$zip->close();
+check(str_contains($xml2,'январь 2027'),'year rollover in original blank');
+act('month.reopen',['teacher_id'=>1,'month'=>'2026-10','comment'=>'Проверка снимка'],$approver);
+$base=$s->row('claims',$fix['id']);$new=act('claim.correct',['id'=>$base['id'],'version'=>$base['version']]);$new=act('claim.save',array_merge($new,['quantity'=>'7']));approve([$new['id']]);
+check(act('report.snapshot',['id'=>$r['id']])['total_cent']===1400,'snapshot remains immutable after later correction');
+check($s->metrics($office,'2026-10',1)['confirmed_cent']===1500,'live total changed independently');
+file_put_contents($file2['path'],'tamper',FILE_APPEND);denied(fn()=>(new Report($s))->download($r2['id'],$office),'tampered document rejected');
+echo "Reports: all checks passed ($n cumulative)\n";
