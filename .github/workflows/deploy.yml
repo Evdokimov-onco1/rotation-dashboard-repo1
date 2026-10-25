@@ -78,7 +78,9 @@ jobs:
 
       - name: Деплой webroot (статика + api)
         run: |
+          # Independent applications own these directories and their private storage.
           rsync -az --delete --exclude 'rotation-config.php' \
+            --exclude '/teaching-preview/' --exclude '/teaching/' \
             -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.DEPLOY_PORT || 22 }}" \
             site/ "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_WEBROOT }}/"
 
